@@ -1,0 +1,144 @@
+{
+  "entities": {
+    "User": {
+      "title": "User",
+      "description": "User profile data",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "username": { "type": "string" },
+        "display_name": { "type": "string" },
+        "avatar_url": { "type": "string" },
+        "role": { "type": "string" },
+        "xp": { "type": "number" },
+        "level": { "type": "string" },
+        "current_streak": { "type": "number" },
+        "longest_streak": { "type": "number" },
+        "last_studied_at": { "type": "string" },
+        "weekly_goal_hrs": { "type": "number" },
+        "subjects": { "type": "array" },
+        "badges": { "type": "array" },
+        "created_at": { "type": "string" }
+      }
+    },
+    "Session": {
+      "title": "Session",
+      "description": "Study session record",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "subject_name": { "type": "string" },
+        "subject_color": { "type": "string" },
+        "duration_mins": { "type": "number" },
+        "focus_rating": { "type": "number" },
+        "mood": { "type": "string" },
+        "note": { "type": "string" },
+        "xp_earned": { "type": "number" },
+        "started_at": { "type": "string" },
+        "completed_at": { "type": "string" }
+      }
+    },
+    "Group": {
+      "title": "Group",
+      "description": "Study group",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "name": { "type": "string" },
+        "description": { "type": "string" },
+        "subject": { "type": "string" },
+        "created_by": { "type": "string" },
+        "member_ids": { "type": "array" },
+        "is_private": { "type": "boolean" },
+        "invite_code": { "type": "string" },
+        "created_at": { "type": "string" }
+      }
+    },
+    "Message": {
+      "title": "Message",
+      "description": "Group chat message",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "group_id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "content": { "type": "string" },
+        "created_at": { "type": "string" }
+      }
+    },
+    "Task": {
+      "title": "Task",
+      "description": "Study planner task",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "title": { "type": "string" },
+        "subject_id": { "type": "string" },
+        "due_date": { "type": "string" },
+        "is_completed": { "type": "boolean" },
+        "created_at": { "type": "string" }
+      }
+    },
+    "Note": {
+      "title": "Note",
+      "description": "Study note",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "subject_id": { "type": "string" },
+        "title": { "type": "string" },
+        "content": { "type": "string" },
+        "is_markdown": { "type": "boolean" },
+        "created_at": { "type": "string" },
+        "updated_at": { "type": "string" }
+      }
+    },
+    "FlashcardDeck": {
+      "title": "FlashcardDeck",
+      "description": "Flashcard deck",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "user_id": { "type": "string" },
+        "subject_id": { "type": "string" },
+        "title": { "type": "string" },
+        "description": { "type": "string" },
+        "cards": { "type": "array" },
+        "created_at": { "type": "string" }
+      }
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/User" },
+      "description": "User profiles"
+    },
+    "/sessions/{sessionId}": {
+      "schema": { "$ref": "#/entities/Session" },
+      "description": "User study sessions"
+    },
+    "/groups/{groupId}": {
+      "schema": { "$ref": "#/entities/Group" },
+      "description": "Study groups"
+    },
+    "/messages/{messageId}": {
+      "schema": { "$ref": "#/entities/Message" },
+      "description": "Chat messages (could be subcollection, but let's stick to root as in Supabase)"
+    },
+    "/tasks/{taskId}": {
+      "schema": { "$ref": "#/entities/Task" },
+      "description": "Planner tasks"
+    },
+    "/notes/{noteId}": {
+      "schema": { "$ref": "#/entities/Note" },
+      "description": "Study notes"
+    },
+    "/decks/{deckId}": {
+      "schema": { "$ref": "#/entities/FlashcardDeck" },
+      "description": "Flashcard decks"
+    }
+  }
+}
