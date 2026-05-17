@@ -5,6 +5,7 @@ import { VitePWA } from 'vite-plugin-pwa';
 import path from 'path';
 
 export default defineConfig({
+  base: '/TrackED-for-Students/',
   plugins: [
     tailwindcss(),
     react(),

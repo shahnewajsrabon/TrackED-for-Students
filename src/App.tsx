@@ -1,5 +1,5 @@
 import React, { Suspense } from 'react';
-import { BrowserRouter, Routes, Route, useLocation } from 'react-router-dom';
+import { HashRouter, Routes, Route, useLocation } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
 import { ThemeProvider } from './context/ThemeContext';
 import { Toaster } from 'react-hot-toast';
@@ -25,7 +25,7 @@ import ToolsPage from './pages/ToolsPage';
 
 function App() {
   return (
-    <BrowserRouter>
+    <HashRouter>
        <ThemeProvider>
         <AuthProvider>
            <Routes>
@@ -58,7 +58,7 @@ function App() {
           }}/>
         </AuthProvider>
       </ThemeProvider>
-    </BrowserRouter>
+    </HashRouter>
   );
 }
 
