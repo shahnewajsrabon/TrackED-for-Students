@@ -237,7 +237,7 @@ export default function ProfilePage() {
                    <button onClick={() => removeSubject(s.id)} className="text-xs text-danger hover:underline font-bold bg-danger/10 px-2 py-1 rounded-lg transition-colors hover:bg-danger hover:text-white">Remove</button>
                  </div>
                  
-                 <div className="grid grid-cols-2 gap-4 text-sm">
+                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                    <div className="space-y-1.5">
                      <label className="text-xs font-bold text-brand-text-secondary uppercase tracking-wider block">Goal (Hrs/wk)</label>
                      <input 
@@ -265,7 +265,7 @@ export default function ProfilePage() {
                        className="w-full px-3 py-2 border border-brand-border bg-brand-surface rounded-xl focus:ring-2 focus:ring-primary focus:outline-none text-brand-text-primary font-semibold shadow-sm"
                      />
                    </div>
-                   <div className="col-span-2 space-y-1.5">
+                   <div className="md:col-span-3 space-y-1.5">
                      <label className="text-xs font-bold text-brand-text-secondary uppercase tracking-wider block">Exam Name (Optional)</label>
                      <input 
                        type="text"
