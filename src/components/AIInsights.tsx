@@ -1,9 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Sparkles, BrainCircuit, Loader2, CalendarClock } from 'lucide-react';
-import { GoogleGenAI } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
-
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY });
 
 interface AIInsightsProps {
   stats: any;
@@ -47,12 +44,18 @@ export default function AIInsights({ stats, sessions }: AIInsightsProps) {
       ### 2. Smart Scheduling
       Based on their 'peakHour' and 'bestDay', suggest an optimal study schedule or time blocks for their upcoming week. Make it actionable and actionable (e.g., "Try tackling your hardest subjects around 10:00 AM since that's your peak hour."). Keep this to bullet points.`;
 
-      const response = await ai.models.generateContent({
-        model: 'gemini-3.1-flash-lite',
-        contents: prompt,
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gemini-3-flash-preview',
+          contents: prompt
+        })
       });
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
 
-      const text = response.text || '';
+      const text = data.text || '';
       
       // Split the response
       const splitText = text.split('### 2. Smart Scheduling');

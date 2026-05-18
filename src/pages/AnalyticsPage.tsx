@@ -1,5 +1,8 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSession } from '@/hooks/useSession';
+import { useAuth } from '@/hooks/useAuth';
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 import { Session } from '@/types';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import StatCard from '@/components/StatCard';
@@ -14,12 +17,15 @@ import { subDays, startOfDay, endOfDay, format } from 'date-fns';
 type Range = 'Today' | 'This Week' | 'This Month' | 'Last 3 Months' | 'All Time';
 
 export default function AnalyticsPage() {
+  const { user } = useAuth();
   const { getSessionsByDateRange, loading: sessionsLoading } = useSession();
   const [sessions, setSessions] = useState<Session[]>([]);
+  const [exams, setExams] = useState<any[]>([]);
   const [range, setRange] = useState<Range>('This Week');
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    if (!user) return;
     let days = 7;
     if (range === 'Today') days = 0;
     else if (range === 'This Month') days = 30;
@@ -30,16 +36,21 @@ export default function AnalyticsPage() {
     const start = startOfDay(subDays(end, days));
     
     setLoading(true);
-    getSessionsByDateRange(start.toISOString(), end.toISOString())
-      .then(data => setSessions(data))
-      .finally(() => setLoading(false));
-  }, [range, getSessionsByDateRange]);
+    
+    Promise.all([
+      getSessionsByDateRange(start.toISOString(), end.toISOString()),
+      getDocs(query(collection(db, 'exam_participants'), where('user_id', '==', user.uid), where('date', '>=', start.toISOString()), where('date', '<=', end.toISOString())))
+    ]).then(([sessData, examsSnap]) => {
+      setSessions(sessData);
+      setExams(examsSnap.docs.map(d => d.data()));
+    }).finally(() => setLoading(false));
+  }, [range, getSessionsByDateRange, user]);
 
   const stats = useMemo(() => {
     const totalMins = sessions.reduce((acc, s) => acc + s.duration_mins, 0);
     const totalHrs = (totalMins / 60).toFixed(1);
     const avgLen = sessions.length ? Math.round(totalMins / sessions.length) : 0;
-    const totalXp = sessions.reduce((acc, s) => acc + s.xp_earned, 0);
+    const totalXp = sessions.reduce((acc, s) => acc + s.xp_earned, 0) + exams.reduce((acc, e) => acc + parseFloat(e.score || '0') * 5, 0);
 
     const dayCounts = [0,0,0,0,0,0,0]; // Sun-Sat
     const hourCounts = new Array(24).fill(0);
@@ -68,8 +79,10 @@ export default function AnalyticsPage() {
        balanceScore = 10; // Highly unbalanced if only 1 subject
     }
 
-    return { totalHrs, avgLen, mostProductiveDay, peakHour, totalXp, subjectMins, hourCounts, balanceScore };
-  }, [sessions]);
+    const avgExamScore = exams.length > 0 ? Math.round(exams.reduce((acc, e) => acc + parseFloat(e.score || '0'), 0) / exams.length) : 0;
+
+    return { totalHrs, avgLen, mostProductiveDay, peakHour, totalXp, subjectMins, hourCounts, balanceScore, examsTaken: exams.length, avgExamScore };
+  }, [sessions, exams]);
 
   // Chart Data format
   const hourChartData = stats.hourCounts.map((count, i) => ({ hour: `${i}:00`, count }));
@@ -130,12 +143,14 @@ export default function AnalyticsPage() {
         ))}
       </div>
 
-      <div className="grid grid-cols-2 lg:grid-cols-5 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-7 gap-4">
         <StatCard label="Total Hours" value={stats.totalHrs} />
         <StatCard label="Avg Session" value={`${stats.avgLen}m`} />
+        <StatCard label="Exams Taken" value={stats.examsTaken} />
+        <StatCard label="Avg Score" value={stats.avgExamScore ? `${stats.avgExamScore}%` : '-'} />
         <StatCard label="Best Day" value={stats.mostProductiveDay} />
         <StatCard label="Peak Hour" value={stats.peakHour} />
-        <StatCard label="XP Earned" value={stats.totalXp} />
+        <StatCard label="Total XP" value={stats.totalXp} />
       </div>
 
       <div className="mt-8 mb-8">

@@ -7,7 +7,6 @@ import { FileText, Save, Edit, Eye, MessageSquare, Trash2, Plus, Wand2, Mail } f
 import LoadingSpinner from '@/components/LoadingSpinner';
 import Markdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { GoogleGenAI } from '@google/genai';
 
 import { motion } from 'motion/react';
 
@@ -84,22 +83,27 @@ export default function NotesPage() {
       setIsEnhancing(true);
 
       try {
-        const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY });
-        const response = await ai.models.generateContent({
-          model: 'gemini-3-flash-preview',
-          contents: [
-            { role: 'user', parts: [
-              { text: "Extract the text from this image and format it as structured, clean markdown notes suitable for studying." },
-              { inlineData: { mimeType: file.type, data: base64d } }
-            ]}
-          ]
+        const response = await fetch('/api/ai/generate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            model: 'gemini-3-flash-preview',
+            contents: [
+              { role: 'user', parts: [
+                { text: "Extract the text from this image and format it as structured, clean markdown notes suitable for studying." },
+                { inlineData: { mimeType: file.type, data: base64d } }
+              ]}
+            ]
+          })
         });
+        const data = await response.json();
+        if (!response.ok) throw new Error(data.error);
 
-        if (response.text) {
+        if (data.text) {
           if (!activeNote || !isEditing) {
-            handleCreateNote(response.text);
+            handleCreateNote(data.text);
           } else {
-            setEditContent(prev => prev + '\n\n' + response.text);
+            setEditContent(prev => prev + '\n\n' + data.text);
           }
         }
       } catch (err) {
@@ -115,13 +119,19 @@ export default function NotesPage() {
     if (!editContent.trim()) return;
     setIsEnhancing(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: `Enhance the following notes. Fix any typos, improve clarity, and add Markdown formatting where appropriate (like bullet points, bolding, headings). Keep the core meaning unchanged, but make it look like a well-structured study guide.\n\nNotes:\n${editContent}`
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gemini-3-flash-preview',
+          contents: `Enhance the following notes. Fix any typos, improve clarity, and add Markdown formatting where appropriate (like bullet points, bolding, headings). Keep the core meaning unchanged, but make it look like a well-structured study guide.\n\nNotes:\n${editContent}`
+        })
       });
-      if (response.text) {
-        setEditContent(response.text);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+
+      if (data.text) {
+        setEditContent(data.text);
       }
     } catch (e) {
       console.error('AI Enhance failed', e);

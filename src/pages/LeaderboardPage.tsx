@@ -30,22 +30,41 @@ export default function LeaderboardPage() {
         const sessSnap = await getDocs(sessQ);
 
         const hoursMap: Record<string, number> = {};
+        const scoreMap: Record<string, number> = {};
+
         sessSnap.forEach(d => {
           const s = d.data();
           hoursMap[s.user_id] = (hoursMap[s.user_id] || 0) + s.duration_mins;
         });
 
-        const userIds = Object.keys(hoursMap);
+        // Also get exam participants to add exam scores
+        const examsSnap = await getDocs(collection(db, 'exam_participants'));
+        examsSnap.forEach(d => {
+          const e = d.data();
+          // Filter by week
+          if (e.date >= start && e.date <= end) {
+            scoreMap[e.user_id] = (scoreMap[e.user_id] || 0) + parseFloat(e.score || '0');
+          }
+        });
+
+        const userIds = Array.from(new Set([...Object.keys(hoursMap), ...Object.keys(scoreMap)]));
         
         if (userIds.length > 0) {
           const uQ = query(collection(db, 'users'), where('id', 'in', userIds));
           const uSnap = await getDocs(uQ);
           const userData = uSnap.docs.map(d => d.data());
 
-          const lb = userData.map((u: any) => ({
-            ...u,
-            hours: (hoursMap[u.id] || 0) / 60
-          })).sort((a,b) => b.hours - a.hours).slice(0, 50);
+          const lb = userData.map((u: any) => {
+             const mins = hoursMap[u.id] || 0;
+             const scores = scoreMap[u.id] || 0;
+             const totalScore = (mins * 10) + scores * 5; // 10 points per min, 5 points per exam score point
+             return {
+               ...u,
+               hours: mins / 60,
+               examScore: scores,
+               totalScore: Math.round(totalScore)
+             }
+          }).sort((a,b) => b.totalScore - a.totalScore).slice(0, 50);
 
           setLeaders(lb);
         } else {
@@ -81,7 +100,7 @@ export default function LeaderboardPage() {
           <Trophy className="w-10 h-10" />
         </div>
         <h1 className="text-4xl font-black tracking-tight text-brand-text-primary drop-shadow-sm">Global Leaderboard</h1>
-        <p className="text-brand-text-secondary text-lg font-medium">Top 50 students this week by hours studied.</p>
+        <p className="text-brand-text-secondary text-lg font-medium">Top 50 students this week by Total Score (Exams + Study Time).</p>
         
         <div className="flex flex-wrap justify-center gap-4 mt-8">
           <div className="bg-brand-surface border border-brand-border px-6 py-3 rounded-2xl font-bold shadow-sm flex items-center gap-3">
@@ -100,8 +119,8 @@ export default function LeaderboardPage() {
               <tr className="bg-brand-bg border-b border-brand-border">
                 <th className="py-6 px-8 font-black text-xs uppercase tracking-widest text-brand-text-secondary w-24 text-center">Rank</th>
                 <th className="py-6 px-8 font-black text-xs uppercase tracking-widest text-brand-text-secondary">Student</th>
-                <th className="py-6 px-8 font-black text-xs uppercase tracking-widest text-brand-text-secondary w-32 text-right">Level</th>
-                <th className="py-6 px-8 font-black text-xs uppercase tracking-widest text-brand-text-secondary w-32 text-right">Hours</th>
+                <th className="py-6 px-8 font-black text-xs uppercase tracking-widest text-brand-text-secondary w-32 text-right">Study Hrs</th>
+                <th className="py-6 px-8 font-black text-xs uppercase tracking-widest text-brand-text-secondary w-32 text-right">Total Score</th>
               </tr>
             </thead>
             <tbody>
@@ -128,17 +147,17 @@ export default function LeaderboardPage() {
                     </div>
                   </td>
                   <td className="py-5 px-8 text-right font-black text-brand-text-secondary">
-                    {l.level}
+                    {l.hours.toFixed(1)}h
                   </td>
                   <td className="py-5 px-8 text-right">
-                    <span className="font-black text-xl text-brand-text-primary bg-brand-bg px-3 py-1 rounded-md border border-brand-border">{l.hours.toFixed(1)}</span>
+                    <span className="font-black text-xl text-success bg-brand-bg px-3 py-1 rounded-md border border-brand-border">{l.totalScore}</span>
                   </td>
                 </motion.tr>
               ))}
               {leaders.length === 0 && (
                 <tr>
                   <td colSpan={4} className="py-16 text-center text-brand-text-secondary font-medium text-lg">
-                    No study sessions recorded this week yet.
+                    No activity recorded this week yet.
                   </td>
                 </tr>
               )}

@@ -1,12 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { MessageCircle, X, Send, Minimize2, Maximize2, Sparkles, Loader2, Trash2, Mail, Mic, Scan, Zap, BrainCircuit, XCircle } from 'lucide-react';
-import { GoogleGenAI, ThinkingLevel } from '@google/genai';
 import ReactMarkdown from 'react-markdown';
 import clsx from 'clsx';
 import { useAuth } from '@/hooks/useAuth';
-
-const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY || process.env.GEMINI_API_KEY });
 
 interface MessagePart {
   text?: string;
@@ -207,7 +204,7 @@ export default function ChatBotWidget() {
       if (isReasoningMode) {
          // network_intelligence: high-level thinking
          targetModel = 'gemini-3-flash-preview';
-         thinkingConfig = { thinkingLevel: ThinkingLevel.HIGH };
+         thinkingConfig = { thinkingLevel: "HIGH" };
       } else if (parts.some(p => p.inlineData)) {
          // document_scanner: image analysis fallback to flash preview for multimodality
          targetModel = 'gemini-3-flash-preview';
@@ -215,33 +212,30 @@ export default function ChatBotWidget() {
          targetModel = 'gemini-3-flash-preview';
       }
 
-      const responseStream = await ai.models.generateContentStream({
-        model: targetModel,
-        contents: newMessages.map(m => ({
-          role: m.role,
-          parts: m.parts.map(p => {
-             if (p.text) return { text: p.text };
-             if (p.inlineData) return { inlineData: p.inlineData };
-             return { text: '' };
-          })
-        })),
-        config: {
-          thinkingConfig,
-          systemInstruction: "You are a helpful, encouraging, and highly intelligent AI tutor for a student focusing app. Be concise, inspiring, and provide step-by-step explanations for complex problems.",
-        }
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: targetModel,
+          contents: newMessages.map(m => ({
+            role: m.role,
+            parts: m.parts.map(p => {
+               if (p.text) return { text: p.text };
+               if (p.inlineData) return { inlineData: p.inlineData };
+               return { text: '' };
+            })
+          })),
+          config: {
+            thinkingConfig,
+            systemInstruction: "You are a helpful, encouraging, and highly intelligent AI tutor for a student focusing app. Be concise, inspiring, and provide step-by-step explanations for complex problems.",
+          }
+        })
       });
 
-      let modelResponseText = "";
-      setMessages(msgs => [...msgs, { role: 'model', parts: [{ text: '' }] }]);
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
 
-      for await (const chunk of responseStream) {
-         modelResponseText += chunk.text;
-         setMessages(msgs => {
-           const updated = [...msgs];
-           updated[updated.length - 1] = { role: 'model', parts: [{ text: modelResponseText }] };
-           return updated;
-         });
-      }
+      setMessages(msgs => [...msgs, { role: 'model', parts: [{ text: data.text }] }]);
     } catch (err: any) {
       console.error(err);
       setMessages(msgs => [...msgs, { role: 'model', parts: [{ text: "Sorry, I ran into an error. Please try again." }] }]);

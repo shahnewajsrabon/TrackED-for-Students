@@ -6,7 +6,6 @@ import { useSubjects } from '@/hooks/useSubjects';
 import { BrainCircuit, Play, Plus, Search, Trash2, Wand2 } from 'lucide-react';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import { motion, AnimatePresence } from 'motion/react';
-import { GoogleGenAI, Type } from '@google/genai';
 
 interface Flashcard {
   id: string;
@@ -66,27 +65,33 @@ export default function FlashcardsPage() {
     
     setIsGenerating(true);
     try {
-      const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
-      const response = await ai.models.generateContent({
-        model: 'gemini-3-flash-preview',
-        contents: `Generate a list of study flashcards based on the following material. Make them concise and clear.\n\nMaterial:\n${aiPrompt}`,
-        config: {
-          responseMimeType: 'application/json',
-          responseSchema: {
-            type: Type.ARRAY,
-            items: {
-              type: Type.OBJECT,
-              properties: {
-                q: { type: Type.STRING, description: 'The question for the flashcard' },
-                a: { type: Type.STRING, description: 'The answer for the flashcard' }
-              },
-              required: ['q', 'a']
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          model: 'gemini-3-flash-preview',
+          contents: `Generate a list of study flashcards based on the following material. Make them concise and clear.\n\nMaterial:\n${aiPrompt}`,
+          config: {
+            responseMimeType: 'application/json',
+            responseSchema: {
+              type: "ARRAY",
+              items: {
+                type: "OBJECT",
+                properties: {
+                  q: { type: "STRING", description: 'The question for the flashcard' },
+                  a: { type: "STRING", description: 'The answer for the flashcard' }
+                },
+                required: ['q', 'a']
+              }
             }
           }
-        }
+        })
       });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
       
-      const text = response.text;
+      const text = data.text;
       if (text) {
         const parsed = JSON.parse(text) as Omit<Flashcard, 'id'>[];
         const newAIcards: Flashcard[] = parsed.map(c => ({ ...c, id: crypto.randomUUID() }));

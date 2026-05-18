@@ -75,32 +75,26 @@ export default function ExamsPage() {
   const handleSubmitExam = async () => {
     if (!user || !takingExam) return;
 
-    let score = 0;
-    const questions = takingExam.questionList || [];
-    questions.forEach((q: any, idx: number) => {
-      if (answers[idx] !== undefined) {
-        if (answers[idx] === q.correctOption) {
-           score += (takingExam.marks / questions.length);
-        } else {
-           score -= takingExam.negativeMarking;
-        }
-      }
-    });
-
     try {
-      await addDoc(collection(db, 'exam_participants'), {
-        user_id: user.uid,
-        exam_id: takingExam.id,
-        title: takingExam.title,
-        type: takingExam.type,
-        score: Math.max(0, score).toFixed(2),
-        rank: 'Evaluating...',
-        submitted_at: serverTimestamp(),
-        date: new Date().toISOString()
+      const response = await fetch('/api/exams/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          examId: takingExam.id,
+          userId: user.uid,
+          answers: answers
+        })
       });
-      alert(`Exam Submitted! Your raw score is: ${Math.max(0, score).toFixed(2)}`);
+      const data = await response.json();
+
+      if (response.ok) {
+        alert(`Exam Submitted! Your raw score is: ${data.score}`);
+      } else {
+        alert(data.error || 'Failed to submit exam');
+      }
     } catch (e) {
       console.error(e);
+      alert('Error submitting exam.');
     }
 
     setTakingExam(null);
@@ -120,7 +114,18 @@ export default function ExamsPage() {
   const handleCreateExam = async () => {
     if (!user) return;
     try {
-      await addDoc(collection(db, 'exams'), {
+      // Create bare questions without answers for public access
+      const publicQuestions = newQuestions.map(q => ({
+        text: q.text,
+        options: q.options
+      }));
+      
+      const correctAnswers = newQuestions.map(q => q.correctOption);
+
+      const examDocId = doc(collection(db, 'exams')).id;
+
+      // Write exam to public collection
+      await setDoc(doc(db, 'exams', examDocId), {
         title: newExam.title,
         type: newExam.type,
         duration: newExam.duration,
@@ -132,8 +137,14 @@ export default function ExamsPage() {
         participants: 0,
         isCompetition: newExam.isCompetition,
         date: new Date().toISOString(),
-        questionList: newQuestions
+        questionList: publicQuestions
       });
+
+      // Write secure keys (could use doc() if we extract the ID properly)
+      await setDoc(doc(db, 'exam_keys', examDocId), {
+        answers: correctAnswers
+      });
+      
       setShowCreateForm(false);
       setCreateStep(1);
       setNewQuestions([{ text: '', options: ['', '', '', ''], correctOption: 0 }]);
@@ -496,7 +507,7 @@ export default function ExamsPage() {
                             <span className="text-[10px] uppercase tracking-widest font-bold text-primary bg-primary/10 px-2 py-1 rounded-md">{exam.type}</span>
                             <h3 className="font-bold text-lg text-brand-text-primary mt-2 flex items-center gap-2">
                                {exam.title}
-                               {exam.isCompetition && <Flame className="w-4 h-4 text-warning" title="Competition Mode" />}
+                               {exam.isCompetition && <Flame className="w-4 h-4 text-warning" />}
                             </h3>
                             <div className="flex items-center gap-1.5 text-xs text-brand-text-secondary font-medium mt-1">
                                <Users className="w-3.5 h-3.5" /> By {exam.creator} • {exam.participants} joined
@@ -539,7 +550,7 @@ export default function ExamsPage() {
                           </div>
                           <h3 className="font-bold text-lg text-brand-text-primary flex items-center gap-2">
                              {exam.title}
-                             {exam.isCompetition && <Flame className="w-4 h-4 text-warning" title="Competition Mode" />}
+                             {exam.isCompetition && <Flame className="w-4 h-4 text-warning" />}
                           </h3>
                           <div className="text-xs font-bold text-brand-text-secondary mt-1">
                              {exam.duration} mins • {exam.marks} marks • {exam.questions} Questions
@@ -580,7 +591,7 @@ export default function ExamsPage() {
                           <div>
                             <h3 className="font-bold text-lg text-brand-text-primary flex items-center gap-2">
                                {exam.title}
-                               {exam.isCompetition && <Flame className="w-4 h-4 text-warning" title="Competition Mode" />}
+                               {exam.isCompetition && <Flame className="w-4 h-4 text-warning" />}
                             </h3>
                             <div className="flex items-center gap-3 text-xs text-brand-text-secondary font-bold mt-1">
                                <span>{new Date(exam.date).toLocaleDateString()}</span>
