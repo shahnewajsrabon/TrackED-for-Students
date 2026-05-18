@@ -7,10 +7,21 @@ import * as admin from 'firebase-admin';
 
 dotenv.config();
 
-// Attempt to initialize Firebase Admin using Application Default Credentials
+// Attempt to initialize Firebase Admin
 try {
   if (!admin.apps.length) {
-    admin.initializeApp();
+    if (process.env.FIREBASE_SERVICE_ACCOUNT_BASE64) {
+      // Decode Base64 service account from environment on platforms like Render
+      const serviceAccount = JSON.parse(
+        Buffer.from(process.env.FIREBASE_SERVICE_ACCOUNT_BASE64, 'base64').toString('utf8')
+      );
+      admin.initializeApp({
+        credential: admin.credential.cert(serviceAccount)
+      });
+    } else {
+      // Fallback to Application Default Credentials (used in AI Studio preview)
+      admin.initializeApp();
+    }
   }
 } catch (error) {
   console.warn("Could not initialize Firebase Admin:", error);
@@ -18,7 +29,7 @@ try {
 
 async function startServer() {
   const app = express();
-  const PORT = 3000;
+  const PORT = parseInt(process.env.PORT || '3000', 10);
 
   app.use(express.json());
 
