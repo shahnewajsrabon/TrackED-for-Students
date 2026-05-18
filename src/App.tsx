@@ -22,6 +22,7 @@ import PlannerPage from './pages/PlannerPage';
 import FlashcardsPage from './pages/FlashcardsPage';
 import NotesPage from './pages/NotesPage';
 import ToolsPage from './pages/ToolsPage';
+import ExamsPage from './pages/ExamsPage';
 
 function App() {
   return (
@@ -42,6 +43,7 @@ function App() {
                 <Route path="/flashcards" element={<FlashcardsPage />} />
                 <Route path="/notes" element={<NotesPage />} />
                 <Route path="/tools" element={<ToolsPage />} />
+                <Route path="/exams" element={<ExamsPage />} />
                 <Route path="/groups" element={<GroupsPage />} />
                 <Route path="/groups/:id" element={<GroupChatPage />} />
                 <Route path="/leaderboard" element={<LeaderboardPage />} />

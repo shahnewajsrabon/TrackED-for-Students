@@ -30,11 +30,11 @@ function ToolModal({ isOpen, onClose, title, icon, children, isMaximized, setIsM
           initial={{ opacity: 0, scale: 0.95, y: 20 }} 
           animate={{ opacity: 1, scale: 1, y: 0 }} 
           exit={{ opacity: 0, scale: 0.95, y: 20 }}
-          className={`relative bg-brand-surface border border-brand-border rounded-[2rem] shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${isMaximized ? 'w-full h-full max-w-none max-h-none rounded-none' : 'w-full max-w-4xl max-h-[85vh] h-[600px]'}`}
+          className={`relative bg-brand-surface border border-brand-border rounded-2xl shadow-2xl flex flex-col overflow-hidden transition-all duration-300 ${isMaximized ? 'w-full h-full max-w-none max-h-none rounded-none' : 'w-full max-w-4xl max-h-[85vh] h-[600px]'}`}
         >
           <div className="flex items-center justify-between px-6 py-4 border-b border-brand-border bg-brand-bg relative z-10">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary">
+              <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary">
                 {icon}
               </div>
               <h3 className="text-xl font-bold tracking-tight text-brand-text-primary">{title}</h3>
@@ -128,34 +128,34 @@ function CalculatorTool() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full p-6 bg-brand-bg">
-      <div className="w-full max-w-sm bg-brand-surface border border-brand-border rounded-3xl p-6 shadow-xl">
+      <div className="w-full max-w-sm bg-brand-surface border border-brand-border rounded-2xl p-6 shadow-xl">
         <div className="bg-brand-bg rounded-2xl p-4 mb-6 text-right border border-brand-border shadow-inner min-h-[100px] flex flex-col justify-end">
           <div className="text-brand-text-secondary text-sm font-medium mb-1 h-5">{equation}</div>
           <div className="text-4xl font-black text-brand-text-primary tracking-tight overflow-hidden text-ellipsis">{display}</div>
         </div>
         <div className="grid grid-cols-4 gap-3">
-          <button onClick={handleClear} className="col-span-2 py-4 bg-danger/10 text-danger hover:bg-danger hover:text-white font-bold rounded-xl transition-colors">AC</button>
-          <button onClick={() => setDisplay(display.slice(0, -1) || '0')} className="py-4 bg-warning/10 text-warning hover:bg-warning hover:text-white font-bold rounded-xl transition-colors">DEL</button>
-          <button onClick={() => handleOp('/')} className="py-4 bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold rounded-xl transition-colors">÷</button>
+          <button onClick={handleClear} className="col-span-2 py-4 bg-danger/10 text-danger hover:bg-danger hover:text-white font-bold rounded-2xl transition-colors">AC</button>
+          <button onClick={() => setDisplay(display.slice(0, -1) || '0')} className="py-4 bg-warning/10 text-warning hover:bg-warning hover:text-white font-bold rounded-2xl transition-colors">DEL</button>
+          <button onClick={() => handleOp('/')} className="py-4 bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold rounded-2xl transition-colors">÷</button>
           
-          <button onClick={() => handleNum('7')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">7</button>
-          <button onClick={() => handleNum('8')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">8</button>
-          <button onClick={() => handleNum('9')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">9</button>
-          <button onClick={() => handleOp('*')} className="py-4 bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold rounded-xl transition-colors">×</button>
+          <button onClick={() => handleNum('7')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">7</button>
+          <button onClick={() => handleNum('8')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">8</button>
+          <button onClick={() => handleNum('9')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">9</button>
+          <button onClick={() => handleOp('*')} className="py-4 bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold rounded-2xl transition-colors">×</button>
           
-          <button onClick={() => handleNum('4')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">4</button>
-          <button onClick={() => handleNum('5')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">5</button>
-          <button onClick={() => handleNum('6')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">6</button>
-          <button onClick={() => handleOp('-')} className="py-4 bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold rounded-xl transition-colors">−</button>
+          <button onClick={() => handleNum('4')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">4</button>
+          <button onClick={() => handleNum('5')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">5</button>
+          <button onClick={() => handleNum('6')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">6</button>
+          <button onClick={() => handleOp('-')} className="py-4 bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold rounded-2xl transition-colors">−</button>
           
-          <button onClick={() => handleNum('1')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">1</button>
-          <button onClick={() => handleNum('2')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">2</button>
-          <button onClick={() => handleNum('3')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">3</button>
-          <button onClick={() => handleOp('+')} className="py-4 bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold rounded-xl transition-colors">+</button>
+          <button onClick={() => handleNum('1')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">1</button>
+          <button onClick={() => handleNum('2')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">2</button>
+          <button onClick={() => handleNum('3')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">3</button>
+          <button onClick={() => handleOp('+')} className="py-4 bg-primary/10 text-primary hover:bg-primary hover:text-white font-bold rounded-2xl transition-colors">+</button>
           
-          <button onClick={() => handleNum('0')} className="col-span-2 py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">0</button>
-          <button onClick={() => handleNum('.')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-xl transition-colors text-lg">.</button>
-          <button onClick={handleEval} className="py-4 bg-success text-white hover:bg-success/90 font-bold rounded-xl transition-colors shadow-lg shadow-success/20">=</button>
+          <button onClick={() => handleNum('0')} className="col-span-2 py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">0</button>
+          <button onClick={() => handleNum('.')} className="py-4 bg-brand-bg hover:bg-brand-border text-brand-text-primary font-bold rounded-2xl transition-colors text-lg">.</button>
+          <button onClick={handleEval} className="py-4 bg-success text-white hover:bg-success/90 font-bold rounded-2xl transition-colors shadow-lg shadow-success/20">=</button>
         </div>
       </div>
     </div>
@@ -203,7 +203,7 @@ function HTMLRunner() {
   return (
     <div className="flex flex-col sm:flex-row h-full">
       <div className="w-full sm:w-1/2 border-b sm:border-b-0 sm:border-r border-brand-border flex flex-col">
-        <div className="bg-brand-bg px-4 py-2 border-b border-brand-border flex items-center gap-2">
+        <div className="bg-brand-bg px-5 py-2.5 border-b border-brand-border flex items-center gap-2">
           <Code2 className="w-4 h-4 text-brand-text-secondary" />
           <span className="text-xs font-bold text-brand-text-secondary uppercase tracking-wider">HTML/CSS/JS Editor</span>
         </div>
@@ -215,7 +215,7 @@ function HTMLRunner() {
         />
       </div>
       <div className="w-full sm:w-1/2 flex flex-col bg-white">
-        <div className="bg-brand-bg px-4 py-2 border-b border-brand-border flex items-center gap-2 border-t sm:border-t-0">
+        <div className="bg-brand-bg px-5 py-2.5 border-b border-brand-border flex items-center gap-2 border-t sm:border-t-0">
            <Play className="w-4 h-4 text-success" />
            <span className="text-xs font-bold text-brand-text-secondary uppercase tracking-wider">Output Preview</span>
         </div>
@@ -342,17 +342,17 @@ function PomodoroTimer() {
 
   return (
     <div className="flex flex-col items-center justify-center h-full bg-brand-bg p-6">
-      <div className="bg-brand-surface p-8 sm:p-12 border border-brand-border rounded-[3rem] shadow-xl text-center max-w-sm w-full">
+      <div className="bg-brand-surface p-8 sm:p-12 border border-brand-border rounded-3xl shadow-xl text-center max-w-sm w-full">
         <div className="flex bg-brand-bg p-1 rounded-2xl mb-8">
           <button 
             onClick={() => switchMode('work')}
-            className={`flex-1 py-2 sm:py-3 rounded-xl font-bold transition-all text-sm sm:text-base ${mode === 'work' ? 'bg-danger text-white shadow-md' : 'text-brand-text-secondary hover:bg-brand-surface'}`}
+            className={`flex-1 py-2 sm:py-3 rounded-2xl font-bold transition-all text-sm sm:text-base ${mode === 'work' ? 'bg-danger text-white shadow-md' : 'text-brand-text-secondary hover:bg-brand-surface'}`}
           >
             Pomodoro (25m)
           </button>
           <button 
             onClick={() => switchMode('break')}
-            className={`flex-1 py-2 sm:py-3 rounded-xl font-bold transition-all text-sm sm:text-base ${mode === 'break' ? 'bg-success text-white shadow-md' : 'text-brand-text-secondary hover:bg-brand-surface'}`}
+            className={`flex-1 py-2 sm:py-3 rounded-2xl font-bold transition-all text-sm sm:text-base ${mode === 'break' ? 'bg-success text-white shadow-md' : 'text-brand-text-secondary hover:bg-brand-surface'}`}
           >
             Break (5m)
           </button>
@@ -411,17 +411,17 @@ function UnitConverter() {
 
   return (
     <div className="flex flex-col items-center p-6 sm:p-10 bg-brand-bg h-full">
-      <div className="w-full max-w-lg bg-brand-surface border border-brand-border rounded-3xl p-6 shadow-md mt-10">
+      <div className="w-full max-w-lg bg-brand-surface border border-brand-border rounded-2xl p-6 shadow-md mt-10">
         <div className="flex gap-2 mb-8">
            <button 
              onClick={() => handleCategoryChange('length')} 
-             className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${category === 'length' ? 'bg-primary text-white' : 'bg-brand-bg text-brand-text-secondary hover:text-brand-text-primary'}`}
+             className={`flex-1 py-2.5 rounded-2xl text-sm font-bold transition-colors ${category === 'length' ? 'bg-primary text-white' : 'bg-brand-bg text-brand-text-secondary hover:text-brand-text-primary'}`}
            >
              Length
            </button>
            <button 
              onClick={() => handleCategoryChange('weight')} 
-             className={`flex-1 py-2.5 rounded-xl text-sm font-bold transition-colors ${category === 'weight' ? 'bg-primary text-white' : 'bg-brand-bg text-brand-text-secondary hover:text-brand-text-primary'}`}
+             className={`flex-1 py-2.5 rounded-2xl text-sm font-bold transition-colors ${category === 'weight' ? 'bg-primary text-white' : 'bg-brand-bg text-brand-text-secondary hover:text-brand-text-primary'}`}
            >
              Weight
            </button>
@@ -434,13 +434,13 @@ function UnitConverter() {
               type="number" 
               value={value} 
               onChange={(e) => setValue(e.target.value)}
-              className="bg-brand-bg border border-brand-border rounded-xl px-4 py-3 text-lg font-bold shadow-inner focus:outline-none focus:ring-2 focus:ring-primary w-full"
+              className="bg-brand-bg border border-brand-border rounded-2xl px-4 py-3 text-lg font-bold shadow-inner focus:outline-none focus:ring-2 focus:ring-primary w-full"
             />
           </div>
           <select 
             value={fromUnit} 
             onChange={(e) => setFromUnit(e.target.value)}
-            className="bg-brand-surface border border-brand-border rounded-xl px-4 py-3 text-lg font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-primary w-full"
+            className="bg-brand-surface border border-brand-border rounded-2xl px-4 py-3 text-lg font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-primary w-full"
           >
             {Object.keys(conversions[category]).map(k => <option key={k} value={k}>{k.toUpperCase()}</option>)}
           </select>
@@ -453,14 +453,14 @@ function UnitConverter() {
         <div className="grid grid-cols-2 gap-4 items-end mt-2">
           <div className="flex flex-col gap-2">
             <label className="text-xs font-bold text-brand-text-secondary uppercase tracking-wider ml-1">To</label>
-            <div className="bg-brand-surface border border-brand-border rounded-xl px-4 py-3 text-lg font-bold shadow-inner flex items-center w-full min-h-[52px] overflow-hidden text-ellipsis">
+            <div className="bg-brand-surface border border-brand-border rounded-2xl px-4 py-3 text-lg font-bold shadow-inner flex items-center w-full min-h-[52px] overflow-hidden text-ellipsis">
                {convert()}
             </div>
           </div>
           <select 
             value={toUnit} 
             onChange={(e) => setToUnit(e.target.value)}
-            className="bg-brand-surface border border-brand-border rounded-xl px-4 py-3 text-lg font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-primary w-full"
+            className="bg-brand-surface border border-brand-border rounded-2xl px-4 py-3 text-lg font-bold shadow-sm focus:outline-none focus:ring-2 focus:ring-primary w-full"
           >
             {Object.keys(conversions[category]).map(k => <option key={k} value={k}>{k.toUpperCase()}</option>)}
           </select>
@@ -513,7 +513,7 @@ function TextAnalyzer() {
         {text && (
           <button 
             onClick={handleCopy}
-            className="absolute bottom-6 right-6 bg-brand-surface border border-brand-border shadow-md hover:border-primary text-brand-text-secondary hover:text-primary rounded-xl px-4 py-2 flex items-center gap-2 transition-all font-bold"
+            className="absolute bottom-6 right-6 bg-brand-surface border border-brand-border shadow-md hover:border-primary text-brand-text-secondary hover:text-primary rounded-2xl px-5 py-2.5 flex items-center gap-2 transition-all font-bold"
           >
             <Copy className="w-4 h-4" /> Copy
           </button>
@@ -594,7 +594,7 @@ function GPACalculator() {
 
   return (
     <div className="flex flex-col h-full bg-brand-bg md:p-6 overflow-hidden">
-      <div className="bg-brand-surface sm:rounded-3xl border border-brand-border shadow-xl flex flex-col h-full max-w-3xl mx-auto w-full overflow-hidden">
+      <div className="bg-brand-surface sm:rounded-2xl border border-brand-border shadow-xl flex flex-col h-full max-w-3xl mx-auto w-full overflow-hidden">
         <div className="bg-primary/5 p-6 sm:p-8 border-b border-brand-border text-center relative">
            <div className="flex justify-center gap-2 mb-4">
              <button 
@@ -637,7 +637,7 @@ function GPACalculator() {
                    value={course.credits}
                    min="0.5" max="10" step="0.5"
                    onChange={(e) => updateCourse(course.id, 'credits', Number(e.target.value))}
-                   className="w-full sm:w-20 bg-brand-surface border border-brand-border rounded-xl px-3 py-2 text-center font-bold outline-none focus:border-primary"
+                   className="w-full sm:w-20 bg-brand-surface border border-brand-border rounded-2xl px-3 py-2 text-center font-bold outline-none focus:border-primary"
                  />
               </div>
               <div className="col-span-3 w-full flex items-center justify-between gap-2">
@@ -646,11 +646,11 @@ function GPACalculator() {
                    <select 
                      value={course.grade}
                      onChange={(e) => updateCourse(course.id, 'grade', e.target.value)}
-                     className="w-full sm:w-24 bg-brand-surface border border-brand-border rounded-xl px-3 py-2 font-bold outline-none focus:border-primary appearance-none"
+                     className="w-full sm:w-24 bg-brand-surface border border-brand-border rounded-2xl px-3 py-2 font-bold outline-none focus:border-primary appearance-none"
                    >
                      {Object.keys(gradePoints).map(g => <option key={g} value={g}>{g}</option>)}
                    </select>
-                   <button onClick={() => removeCourse(course.id)} className="p-2 text-brand-text-secondary hover:text-danger hover:bg-danger/10 rounded-xl transition-colors">
+                   <button onClick={() => removeCourse(course.id)} className="p-2 text-brand-text-secondary hover:text-danger hover:bg-danger/10 rounded-2xl transition-colors">
                      <Trash2 className="w-4 h-4" />
                    </button>
                  </div>
@@ -793,8 +793,8 @@ function Whiteboard() {
             />
          </div>
          <div className="ml-auto w-full sm:w-auto flex items-center justify-end gap-2">
-           <button onClick={clearCanvas} className="text-sm font-bold text-danger hover:bg-danger/10 px-3 py-1.5 rounded-xl transition-colors">Clear</button>
-           <button onClick={downloadCanvas} className="text-sm font-bold text-white bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-xl transition-colors flex items-center gap-2">
+           <button onClick={clearCanvas} className="text-sm font-bold text-danger hover:bg-danger/10 px-3 py-1.5 rounded-2xl transition-colors">Clear</button>
+           <button onClick={downloadCanvas} className="text-sm font-bold text-white bg-primary hover:bg-primary/90 px-3 py-1.5 rounded-2xl transition-colors flex items-center gap-2">
              <Download className="w-4 h-4" /> Save
            </button>
          </div>
@@ -852,7 +852,7 @@ function TextToSpeech() {
 
   return (
     <div className="flex flex-col h-full bg-brand-bg md:p-6 overflow-hidden">
-      <div className="bg-brand-surface sm:rounded-3xl border border-brand-border shadow-xl flex flex-col h-full max-w-3xl mx-auto w-full overflow-hidden">
+      <div className="bg-brand-surface sm:rounded-2xl border border-brand-border shadow-xl flex flex-col h-full max-w-3xl mx-auto w-full overflow-hidden">
         <div className="p-6 border-b border-brand-border flex items-center justify-between">
           <div className="flex items-center gap-2">
             <Sparkles className="w-5 h-5 text-[#8B5CF6]" />
@@ -863,7 +863,7 @@ function TextToSpeech() {
             <select
               value={voice}
               onChange={(e) => setVoice(e.target.value)}
-              className="bg-brand-bg border border-brand-border rounded-xl px-3 py-1.5 text-sm font-bold outline-none focus:border-primary cursor-pointer"
+              className="bg-brand-bg border border-brand-border rounded-2xl px-3 py-1.5 text-sm font-bold outline-none focus:border-primary cursor-pointer"
             >
               <option value="Puck">Voice 1</option>
               <option value="Charon">Voice 2</option>
@@ -883,7 +883,7 @@ function TextToSpeech() {
           <div className="flex flex-col sm:flex-row items-center gap-4 justify-between mt-auto">
              <div className="w-full sm:w-auto h-12 flex-1">
                 {audioUrl && (
-                  <audio controls src={audioUrl} className="w-full max-w-xs h-full bg-brand-bg rounded-xl" autoPlay />
+                  <audio controls src={audioUrl} className="w-full max-w-xs h-full bg-brand-bg rounded-2xl" autoPlay />
                 )}
              </div>
              <button
@@ -986,9 +986,9 @@ export default function ToolsSection() {
 
   return (
     <>
-      <section className="bg-brand-surface shadow-sm hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-[2.5rem] border border-brand-border mt-8">
+      <section className="bg-brand-surface shadow hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-2xl border border-brand-border mt-8">
         <h2 className="text-2xl font-bold mb-6 text-brand-text-primary flex items-center gap-3">
-           <div className="p-2.5 bg-brand-text-secondary/10 rounded-xl text-brand-text-secondary">
+           <div className="p-2.5 bg-brand-text-secondary/10 rounded-2xl text-brand-text-secondary">
              <Terminal className="w-6 h-6" />
            </div>
            Student Tools
@@ -998,7 +998,7 @@ export default function ToolsSection() {
             <button
               key={tool.id}
               onClick={() => setActiveTool(tool.id)}
-              className={`group text-left p-5 rounded-[2rem] border border-brand-border bg-brand-bg transition-all duration-300 hover:shadow-md ${tool.borderColor} outline-none flex flex-col gap-4`}
+              className={`group text-left p-5 rounded-2xl border border-brand-border bg-brand-bg transition-all duration-300 hover:shadow-md ${tool.borderColor} outline-none flex flex-col gap-4`}
             >
               <div className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-colors ${tool.color}`}>
                 {tool.icon}

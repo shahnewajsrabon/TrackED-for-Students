@@ -333,7 +333,7 @@ export default function ChatBotWidget() {
             </div>
             
             {/* AI Capability Toggles */}
-            <div className="flex flex-wrap items-center gap-2 px-4 py-2 bg-brand-bg border-b border-brand-border cursor-default">
+            <div className="flex flex-wrap items-center gap-2 px-5 py-2.5 bg-brand-bg border-b border-brand-border cursor-default">
                <button 
                  onClick={() => {
                    setIsFastMode(true);

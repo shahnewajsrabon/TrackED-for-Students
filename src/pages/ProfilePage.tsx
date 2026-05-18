@@ -111,7 +111,7 @@ export default function ProfilePage() {
     <div className="max-w-5xl mx-auto space-y-8">
       
       {/* Header Profile Card */}
-      <div className="bg-brand-surface p-8 rounded-3xl border border-brand-border flex flex-col md:flex-row items-center gap-8 shadow-sm">
+      <div className="bg-brand-surface p-8 rounded-2xl border border-brand-border flex flex-col md:flex-row items-center gap-8 shadow-sm">
         <div className="shrink-0 relative">
           <XPProgressRing 
             xp={userData.xp} 
@@ -128,7 +128,7 @@ export default function ProfilePage() {
         <div className="flex-1 text-center md:text-left">
           <h1 className="text-3xl font-bold mb-1">{userData.display_name}</h1>
           <p className="text-brand-text-secondary font-medium mb-4">@{userData.username}</p>
-          <div className="inline-flex items-center gap-2 bg-warning/10 text-warning px-4 py-2 rounded-xl font-bold">
+          <div className="inline-flex items-center gap-2 bg-warning/10 text-warning px-5 py-2.5 rounded-2xl font-bold">
             <Award className="w-5 h-5 -mt-0.5" /> Level: {userData.level}
           </div>
           <p className="text-xs text-brand-text-secondary mt-3">
@@ -143,11 +143,11 @@ export default function ProfilePage() {
                navigator.clipboard.writeText(url);
                toast.success('Public profile link copied to clipboard!');
              }} 
-             className="w-full flex justify-center items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-6 py-3 rounded-xl font-medium transition-colors border border-indigo-100"
+             className="w-full flex justify-center items-center gap-2 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 px-6 py-3 rounded-2xl font-medium transition-colors border border-indigo-100"
            >
              <Share2 className="w-4 h-4" /> Share Profile
            </button>
-           <button onClick={signOut} className="w-full flex justify-center items-center gap-2 bg-brand-bg hover:bg-brand-border border border-brand-border text-brand-text-primary px-6 py-3 rounded-xl font-medium transition-colors">
+           <button onClick={signOut} className="w-full flex justify-center items-center gap-2 bg-brand-bg hover:bg-brand-border border border-brand-border text-brand-text-primary px-6 py-3 rounded-2xl font-medium transition-colors">
              <LogOut className="w-4 h-4" /> Sign Out
            </button>
         </div>
@@ -161,14 +161,14 @@ export default function ProfilePage() {
       </div>
 
       {/* Badges */}
-      <div className="bg-brand-surface p-8 rounded-3xl border border-brand-border">
+      <div className="bg-brand-surface p-8 rounded-2xl border border-brand-border">
          <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Award className="w-5 h-5 text-primary" /> Badges</h2>
          <BadgeGrid badges={userData.badges || []} />
       </div>
 
       <div className="grid md:grid-cols-2 gap-8">
         {/* Settings */}
-        <div className="bg-brand-surface p-8 rounded-3xl border border-brand-border h-fit space-y-8">
+        <div className="bg-brand-surface p-8 rounded-2xl border border-brand-border h-fit space-y-8">
            <div>
              <h2 className="text-xl font-bold flex items-center gap-2 mb-6"><Settings className="w-5 h-5 text-primary" /> Edit Profile & Goals</h2>
              
@@ -180,9 +180,9 @@ export default function ProfilePage() {
                      type="text" 
                      value={newName} 
                      onChange={e => setNewName(e.target.value)} 
-                     className="flex-1 px-4 py-2 bg-brand-bg border border-brand-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
+                     className="flex-1 px-5 py-2.5 bg-brand-bg border border-brand-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary"
                    />
-                   <button onClick={updateProfile} className="bg-primary text-white px-4 py-2 rounded-xl font-medium hover:bg-primary/90">Save</button>
+                   <button onClick={updateProfile} className="bg-primary text-white px-5 py-2.5 rounded-2xl font-medium hover:bg-primary/90">Save</button>
                  </div>
                </div>
 
@@ -198,7 +198,7 @@ export default function ProfilePage() {
                      if (user) await updateDoc(doc(db, 'users', user.uid), { daily_goal_hrs: newVal });
                      toast.success('Daily goal updated', {id: 'daily-goal'});
                    }} 
-                   className="w-full px-4 py-2 bg-brand-bg border border-brand-border rounded-xl focus:outline-none focus:ring-2 focus:ring-primary"
+                   className="w-full px-5 py-2.5 bg-brand-bg border border-brand-border rounded-2xl focus:outline-none focus:ring-2 focus:ring-primary"
                  />
                </div>
              </div>
@@ -217,7 +217,7 @@ export default function ProfilePage() {
                  <button
                    key={theme.id}
                    onClick={() => setAppTheme(theme.id as any)}
-                   className={`p-3 rounded-xl border-2 font-bold transition-all text-left ${appTheme === theme.id ? 'border-primary bg-primary-light text-primary ring-2 ring-primary/20 cursor-default' : 'border-brand-border bg-brand-bg text-brand-text-secondary hover:border-gray-300 hover:text-brand-text-primary'}`}
+                   className={`p-3 rounded-2xl border-2 font-bold transition-all text-left ${appTheme === theme.id ? 'border-primary bg-primary-light text-primary ring-2 ring-primary/20 cursor-default' : 'border-brand-border bg-brand-bg text-brand-text-secondary hover:border-gray-300 hover:text-brand-text-primary'}`}
                  >
                    {theme.label}
                  </button>
@@ -227,7 +227,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Subjects */}
-        <div className="bg-brand-surface p-8 rounded-3xl border border-brand-border border-dashed h-fit space-y-6">
+        <div className="bg-brand-surface p-8 rounded-2xl border border-brand-border border-dashed h-fit space-y-6">
            <h3 className="font-bold text-xl flex items-center gap-2"><Clock className="w-5 h-5 text-primary" /> Manage Subjects & Exams</h3>
            <div className="space-y-4 max-h-[400px] overflow-y-auto pr-2 mb-4">
              {subjects.map(s => (
@@ -244,7 +244,7 @@ export default function ProfilePage() {
                        type="number" min="1" max="40" 
                        value={s.weeklyGoalHrs}
                        onChange={e => updateSubject(s.id, { weeklyGoalHrs: parseInt(e.target.value) || 0 })}
-                       className="w-full px-3 py-2 border border-brand-border bg-brand-surface rounded-xl focus:ring-2 focus:ring-primary focus:outline-none font-semibold shadow-sm"
+                       className="w-full px-3 py-2 border border-brand-border bg-brand-surface rounded-2xl focus:ring-2 focus:ring-primary focus:outline-none font-semibold shadow-sm"
                      />
                    </div>
                    <div className="space-y-1.5">
@@ -253,7 +253,7 @@ export default function ProfilePage() {
                        type="date"
                        value={s.examDate || ''}
                        onChange={e => updateSubject(s.id, { examDate: e.target.value || undefined })}
-                       className="w-full px-3 py-2 border border-brand-border bg-brand-surface rounded-xl focus:ring-2 focus:ring-primary focus:outline-none text-brand-text-primary font-semibold shadow-sm"
+                       className="w-full px-3 py-2 border border-brand-border bg-brand-surface rounded-2xl focus:ring-2 focus:ring-primary focus:outline-none text-brand-text-primary font-semibold shadow-sm"
                      />
                    </div>
                    <div className="space-y-1.5">
@@ -262,7 +262,7 @@ export default function ProfilePage() {
                        type="date"
                        value={s.examReminderDate || ''}
                        onChange={e => updateSubject(s.id, { examReminderDate: e.target.value || undefined })}
-                       className="w-full px-3 py-2 border border-brand-border bg-brand-surface rounded-xl focus:ring-2 focus:ring-primary focus:outline-none text-brand-text-primary font-semibold shadow-sm"
+                       className="w-full px-3 py-2 border border-brand-border bg-brand-surface rounded-2xl focus:ring-2 focus:ring-primary focus:outline-none text-brand-text-primary font-semibold shadow-sm"
                      />
                    </div>
                    <div className="md:col-span-3 space-y-1.5">
@@ -272,7 +272,7 @@ export default function ProfilePage() {
                        placeholder="e.g., Midterms, Final Exam"
                        value={s.examName || ''}
                        onChange={e => updateSubject(s.id, { examName: e.target.value || undefined })}
-                       className="w-full px-3 py-2 border border-brand-border bg-brand-surface rounded-xl focus:ring-2 focus:ring-primary focus:outline-none text-brand-text-primary font-semibold shadow-sm"
+                       className="w-full px-3 py-2 border border-brand-border bg-brand-surface rounded-2xl focus:ring-2 focus:ring-primary focus:outline-none text-brand-text-primary font-semibold shadow-sm"
                      />
                    </div>
                  </div>
@@ -286,18 +286,18 @@ export default function ProfilePage() {
            <div className="bg-primary/5 p-5 rounded-2xl border border-primary/20 space-y-4">
              <input 
                type="text" placeholder="Subject Name" value={newSub.name} onChange={e => setNewSub({...newSub, name: e.target.value})}
-               className="w-full px-4 py-2.5 border border-brand-border bg-brand-surface rounded-xl text-brand-text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary font-medium shadow-sm"
+               className="w-full px-4 py-2.5 border border-brand-border bg-brand-surface rounded-2xl text-brand-text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary font-medium shadow-sm"
              />
              <div className="flex gap-3">
                <input 
                  type="color" value={newSub.color} onChange={e => setNewSub({...newSub, color: e.target.value})}
-                 className="w-12 h-[42px] p-1 border border-brand-border rounded-xl cursor-pointer bg-brand-surface shadow-sm"
+                 className="w-12 h-[42px] p-1 border border-brand-border rounded-2xl cursor-pointer bg-brand-surface shadow-sm"
                />
                <input 
                  type="number" placeholder="Weekly Hrs" value={newSub.weeklyGoalHrs} onChange={e => setNewSub({...newSub, weeklyGoalHrs: parseInt(e.target.value)})}
-                 className="flex-1 w-24 px-4 py-2.5 border border-brand-border bg-brand-surface rounded-xl text-brand-text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary font-medium shadow-sm"
+                 className="flex-1 w-24 px-4 py-2.5 border border-brand-border bg-brand-surface rounded-2xl text-brand-text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary font-medium shadow-sm"
                />
-               <button onClick={handleAddSubject} className="bg-primary text-white px-5 py-2.5 rounded-xl font-bold shadow-md hover:bg-primary/90 transition-transform active:scale-95">Add</button>
+               <button onClick={handleAddSubject} className="bg-primary text-white px-5 py-2.5 rounded-2xl font-bold shadow-md hover:bg-primary/90 transition-transform active:scale-95">Add</button>
              </div>
            </div>
         </div>

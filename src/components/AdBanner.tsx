@@ -45,7 +45,7 @@ export default function AdBanner({
   }, []);
 
   return (
-    <div className={`w-full overflow-hidden flex justify-center items-center py-4 bg-brand-surface border border-brand-border rounded-xl relative min-h-[90px] min-w-[250px] ${className}`}>
+    <div className={`w-full overflow-hidden flex justify-center items-center py-4 bg-brand-surface border border-brand-border rounded-2xl relative min-h-[90px] min-w-[250px] ${className}`}>
       {/* Placeholder text visible during development or if ads are blocked */}
       <div className="absolute text-brand-text-secondary/50 text-xs font-medium uppercase tracking-widest text-center px-4">
         Advertisement Placeholder

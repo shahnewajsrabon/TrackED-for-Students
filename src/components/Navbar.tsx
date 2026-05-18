@@ -1,37 +1,40 @@
 import React from 'react';
-import { NavLink, useLocation } from 'react-router-dom';
-import { BookOpen, Timer, BarChart3, Users, Trophy, UserCircle, Flame, Moon, Sun, ListChecks, Calendar, BrainCircuit, FileText, Wrench } from 'lucide-react';
+import { NavLink } from 'react-router-dom';
+import { BookOpen, Timer, BarChart3, Users, Trophy, UserCircle, Flame, Moon, Sun, ListChecks, Calendar, BrainCircuit, FileText, Wrench, Languages, FileQuestion } from 'lucide-react';
 import { useAuthContext } from '@/context/AuthContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/context/ThemeContext';
 import clsx from 'clsx';
 import { db } from '@/lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
+import { useTranslation } from 'react-i18next';
 
-const navSections = [
+// Base config - we'll translate the labels dynamically
+const navSectionsConfig = [
   {
-    title: 'Study Area',
+    titleKey: 'Study Area',
     items: [
-      { path: '/dashboard', label: 'Dashboard', icon: BookOpen },
-      { path: '/planner', label: 'Planner', icon: Calendar },
-      { path: '/timer', label: 'Timer', icon: Timer },
+      { path: '/dashboard', labelKey: 'dashboard', icon: BookOpen },
+      { path: '/planner', labelKey: 'planner', icon: Calendar },
+      { path: '/timer', labelKey: 'Timer', icon: Timer },
     ]
   },
   {
-    title: 'Learning Tools',
+    titleKey: 'Learning Tools',
     items: [
-      { path: '/syllabus', label: 'Syllabus', icon: ListChecks },
-      { path: '/flashcards', label: 'Flashcards', icon: BrainCircuit },
-      { path: '/notes', label: 'Notes', icon: FileText },
-      { path: '/tools', label: 'Tools', icon: Wrench },
+      { path: '/syllabus', labelKey: 'Syllabus', icon: ListChecks },
+      { path: '/flashcards', labelKey: 'flashcards', icon: BrainCircuit },
+      { path: '/notes', labelKey: 'notes', icon: FileText },
+      { path: '/tools', labelKey: 'tools', icon: Wrench },
     ]
   },
   {
-    title: 'Community & Stats',
+    titleKey: 'Community & Stats',
     items: [
-      { path: '/analytics', label: 'Analytics', icon: BarChart3 },
-      { path: '/groups', label: 'Groups', icon: Users },
-      { path: '/leaderboard', label: 'Leaderboard', icon: Trophy },
+      { path: '/exams', labelKey: 'Exams', icon: FileQuestion },
+      { path: '/analytics', labelKey: 'Analytics', icon: BarChart3 },
+      { path: '/groups', labelKey: 'Groups', icon: Users },
+      { path: '/leaderboard', labelKey: 'Leaderboard', icon: Trophy },
     ]
   }
 ];
@@ -40,6 +43,12 @@ export default function Navbar() {
   const { user } = useAuthContext();
   const { theme, toggleTheme } = useTheme();
   const [userData, setUserData] = React.useState<any>(null);
+  const { t, i18n } = useTranslation();
+
+  const toggleLanguage = () => {
+    const nextLang = i18n.language === 'en' ? 'bn' : 'en';
+    i18n.changeLanguage(nextLang);
+  };
   
   React.useEffect(() => {
     if (user) {
@@ -64,24 +73,25 @@ export default function Navbar() {
         </div>
 
         <div className="flex-1 overflow-y-auto py-6 px-4 space-y-6">
-          {navSections.map((section) => (
-            <div key={section.title} className="space-y-1">
+          {navSectionsConfig.map((section) => (
+            <div key={section.titleKey} className="space-y-1">
               <div className="px-4 text-xs font-bold uppercase tracking-wider text-brand-text-secondary mb-2">
-                {section.title}
+                {section.titleKey}
               </div>
               {section.items.map((item) => {
                 const Icon = item.icon;
+                const label = t(`nav.${item.labelKey}`, item.labelKey); // fallback to key itself if not found
                 return (
                   <NavLink
                     key={item.path}
                     to={item.path}
                     className={({ isActive }) => clsx(
-                      "flex items-center gap-3 px-4 py-2.5 rounded-xl text-sm font-semibold transition-all duration-200",
+                      "flex items-center gap-3 px-4 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200",
                       isActive ? "bg-primary-light text-primary shadow-sm" : "text-brand-text-secondary hover:bg-gray-100 dark:hover:bg-brand-border hover:text-brand-text-primary"
                     )}
                   >
                     <Icon className="w-5 h-5 shrink-0" />
-                    {item.label}
+                    {label}
                   </NavLink>
                 );
               })}
@@ -92,7 +102,7 @@ export default function Navbar() {
         <div className="p-4 border-t border-brand-border mt-auto flex flex-col gap-3">
           {userData && (
             <NavLink to="/profile" className={({ isActive }) => clsx(
-              "flex items-center gap-3 p-2 rounded-xl border border-transparent transition-colors",
+              "flex items-center gap-3 p-2 rounded-2xl border border-transparent transition-colors",
               isActive ? "bg-primary-light border-primary/20 text-primary" : "hover:bg-brand-bg hover:border-brand-border text-brand-text-primary"
             )}>
                <div className="w-10 h-10 rounded-full bg-primary/20 overflow-hidden flex items-center justify-center text-primary font-bold shrink-0">
@@ -116,17 +126,23 @@ export default function Navbar() {
             </NavLink>
           )}
 
-          <button onClick={toggleTheme} className="flex items-center gap-3 px-4 py-3 rounded-xl text-sm font-semibold text-brand-text-secondary hover:bg-gray-100 dark:hover:bg-brand-border hover:text-brand-text-primary transition-colors w-full">
-            {theme === 'dark' ? <Sun className="w-5 h-5 shrink-0" /> : <Moon className="w-5 h-5 shrink-0" />}
-            {theme === 'dark' ? 'Light Mode' : 'Dark Mode'}
-          </button>
+          <div className="flex items-center gap-2">
+            <button onClick={toggleTheme} className="flex flex-1 items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-brand-text-secondary hover:bg-gray-100 dark:hover:bg-brand-border hover:text-brand-text-primary transition-colors">
+              {theme === 'dark' ? <Sun className="w-5 h-5 shrink-0" /> : <Moon className="w-5 h-5 shrink-0" />}
+            </button>
+            <button onClick={toggleLanguage} className="flex flex-1 items-center gap-3 px-4 py-3 rounded-2xl text-sm font-semibold text-brand-text-secondary hover:bg-gray-100 dark:hover:bg-brand-border hover:text-brand-text-primary transition-colors">
+              <Languages className="w-5 h-5 shrink-0" />
+              {i18n.language === 'en' ? 'EN' : 'বাংলা'}
+            </button>
+          </div>
         </div>
       </aside>
 
       {/* Mobile Bottom Bar */}
       <nav className="md:hidden fixed bottom-0 left-0 right-0 border-t border-brand-border bg-brand-surface flex items-center overflow-x-auto z-50 px-2 pb-2 shadow-[0_-4px_20px_-10px_rgba(0,0,0,0.1)] no-scrollbar">
-        {navSections.flatMap(section => section.items).map((item) => {
+        {navSectionsConfig.flatMap(section => section.items).map((item) => {
           const Icon = item.icon;
+          const label = t(`nav.${item.labelKey}`, item.labelKey);
           return (
             <NavLink
               key={item.path}
@@ -138,10 +154,10 @@ export default function Navbar() {
             >
               {({ isActive }) => (
                 <>
-                  <div className={clsx("p-1.5 rounded-xl transition-all", isActive ? "bg-primary-light" : "")}>
+                  <div className={clsx("p-1.5 rounded-2xl transition-all", isActive ? "bg-primary-light" : "")}>
                      <Icon className="w-5 h-5" />
                   </div>
-                  <span className="text-[10px] mt-0.5">{item.label}</span>
+                  <span className="text-[10px] mt-0.5">{label}</span>
                 </>
               )}
             </NavLink>
@@ -150,7 +166,7 @@ export default function Navbar() {
       </nav>
 
       {/* Mobile Top Bar */}
-      <div className="md:hidden fixed top-0 left-0 right-0 border-b border-brand-border bg-brand-surface/80 backdrop-blur-md z-40 px-5 py-3 flex items-center justify-between">
+      <div className="md:hidden fixed top-0 left-0 right-0 border-b border-brand-border bg-brand-surface/80 backdrop-blur-md z-40 px-5 py-2.5 flex items-center justify-between">
          <div className="flex items-center gap-2">
             <div className="w-7 h-7 bg-primary rounded-lg border border-primary flex items-center justify-center text-white shrink-0 shadow-sm">
               <Timer className="w-4 h-4" />
@@ -158,6 +174,9 @@ export default function Navbar() {
             <span className="font-extrabold tracking-tight text-brand-text-primary text-lg">TrackED</span>
          </div>
          <div className="flex items-center gap-3">
+            <button onClick={toggleLanguage} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-brand-bg text-brand-text-secondary transition-colors font-bold text-xs uppercase">
+              {i18n.language === 'en' ? 'EN' : 'বাং'}
+            </button>
             <button onClick={toggleTheme} className="p-2 rounded-full hover:bg-gray-100 dark:hover:bg-brand-bg text-brand-text-secondary transition-colors">
               {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
             </button>

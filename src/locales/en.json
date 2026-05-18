@@ -1,0 +1,35 @@
+{
+  "nav": {
+    "dashboard": "Dashboard",
+    "planner": "Planner",
+    "focus": "Focus",
+    "notes": "Notes",
+    "flashcards": "Flashcards",
+    "chat": "Ask AI",
+    "profile": "Profile",
+    "tools": "Tools"
+  },
+  "dashboard": {
+    "welcome": "Welcome back",
+    "ready": "Ready to conquer your goals today?",
+    "studyTime": "Study Time",
+    "thisWeek": "This week",
+    "tasksCompleted": "Tasks Completed",
+    "outOf": "out of",
+    "activeSubjects": "Active Subjects",
+    "learning": "Learning",
+    "upcomingExams": "Upcoming Exams",
+    "noExams": "No upcoming exams.",
+    "addExamsMsg": "Add your exams in the profile page to track them here.",
+    "dailyGoals": "Daily Goals",
+    "noGoals": "No active tasks today.",
+    "addGoalsMsg": "Go to the Planner to add some tasks.",
+    "recentActivity": "Recent Activity"
+  },
+  "settings": {
+    "language": "Language",
+    "english": "English",
+    "bengali": "বাংলা",
+    "theme": "Theme"
+  }
+}

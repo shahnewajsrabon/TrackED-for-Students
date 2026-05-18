@@ -29,7 +29,7 @@ export default function BadgeGrid({ badges }: Props) {
           <div 
             key={b.id} 
             className={clsx(
-              "flex flex-col items-center text-center p-4 rounded-xl border transition-all",
+              "flex flex-col items-center text-center p-4 rounded-2xl border transition-all",
               unlocked ? "border-primary bg-primary-light" : "border-brand-border bg-gray-50 opacity-60 grayscale"
             )}
           >

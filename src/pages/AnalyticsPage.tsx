@@ -113,17 +113,17 @@ export default function AnalyticsPage() {
           <h1 className="text-3xl font-bold">Analytics</h1>
           <p className="text-brand-text-secondary">Insights to optimize your learning.</p>
         </div>
-        <button onClick={exportCSV} className="bg-brand-surface border border-brand-border px-4 py-2 rounded-xl text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm">
+        <button onClick={exportCSV} className="bg-brand-surface border border-brand-border px-5 py-2.5 rounded-2xl text-sm font-medium hover:bg-gray-50 transition-colors shadow-sm">
           Export CSV
         </button>
       </div>
 
-      <div className="flex bg-brand-bg border border-brand-border p-1 rounded-xl w-fit overflow-x-auto max-w-full">
+      <div className="flex bg-brand-bg border border-brand-border p-1 rounded-2xl w-fit overflow-x-auto max-w-full">
         {(['Today', 'This Week', 'This Month', 'Last 3 Months', 'All Time'] as Range[]).map(r => (
           <button
             key={r}
             onClick={() => setRange(r)}
-            className={`px-4 py-2 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${range === r ? 'bg-brand-surface shadow-sm text-primary' : 'text-brand-text-secondary hover:text-brand-text-primary'}`}
+            className={`px-5 py-2.5 rounded-lg text-sm font-medium whitespace-nowrap transition-all ${range === r ? 'bg-brand-surface shadow-sm text-primary' : 'text-brand-text-secondary hover:text-brand-text-primary'}`}
           >
             {r}
           </button>
@@ -143,7 +143,7 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="grid lg:grid-cols-3 gap-6">
-        <div className="lg:col-span-2 bg-brand-surface shadow-sm hover:shadow-md transition-shadow p-6 rounded-3xl border border-brand-border">
+        <div className="lg:col-span-2 bg-brand-surface shadow hover:shadow-md transition-shadow p-6 rounded-2xl border border-brand-border">
           <h2 className="text-lg font-bold mb-6 text-brand-text-primary">Subject Distribution (Hours)</h2>
           <div className="h-[300px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -158,7 +158,7 @@ export default function AnalyticsPage() {
           </div>
         </div>
 
-        <div className="bg-brand-surface shadow-sm hover:shadow-md transition-shadow p-6 rounded-3xl border border-brand-border flex flex-col items-center justify-center text-center relative overflow-hidden">
+        <div className="bg-brand-surface shadow hover:shadow-md transition-shadow p-6 rounded-2xl border border-brand-border flex flex-col items-center justify-center text-center relative overflow-hidden">
            <h2 className="text-lg font-bold mb-2 z-10 text-brand-text-primary">Balance Score</h2>
            <div className={`text-6xl font-black mb-2 z-10 ${stats.balanceScore > 70 ? 'text-success' : stats.balanceScore > 40 ? 'text-warning' : 'text-danger'}`}>
              {stats.balanceScore}
@@ -176,7 +176,7 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
-       <div className="bg-brand-surface shadow-sm hover:shadow-md transition-shadow p-6 rounded-3xl border border-brand-border">
+       <div className="bg-brand-surface shadow hover:shadow-md transition-shadow p-6 rounded-2xl border border-brand-border">
           <h2 className="text-lg font-bold mb-6 text-brand-text-primary">Activity by Time of Day</h2>
           <div className="h-[250px] w-full">
             <ResponsiveContainer width="100%" height="100%">
@@ -191,7 +191,7 @@ export default function AnalyticsPage() {
           </div>
       </div>
 
-      <div className="bg-brand-surface shadow-sm hover:shadow-md transition-shadow p-6 rounded-3xl border border-brand-border">
+      <div className="bg-brand-surface shadow hover:shadow-md transition-shadow p-6 rounded-2xl border border-brand-border">
         <div className="flex flex-col md:flex-row justify-between items-start flex-wrap gap-4 mb-6">
           <h2 className="text-lg font-bold text-brand-text-primary">Study Journal</h2>
           <input 
@@ -199,7 +199,7 @@ export default function AnalyticsPage() {
             placeholder="Search notes, subjects, mood..." 
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="w-full md:w-64 px-4 py-2 border border-brand-border rounded-xl text-sm focus:ring-2 focus:ring-primary focus:outline-none"
+            className="w-full md:w-64 px-5 py-2.5 border border-brand-border rounded-2xl text-sm focus:ring-2 focus:ring-primary focus:outline-none"
           />
         </div>
         

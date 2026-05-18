@@ -93,7 +93,7 @@ export default function LeaderboardPage() {
         </div>
       </div>
 
-      <div className="bg-brand-surface border border-brand-border rounded-[2.5rem] overflow-hidden shadow-sm">
+      <div className="bg-brand-surface border border-brand-border rounded-2xl overflow-hidden shadow-sm">
         <div className="overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>

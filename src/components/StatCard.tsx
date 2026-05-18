@@ -13,7 +13,7 @@ export default function StatCard({ label, value, icon, subtitle }: Props) {
     <motion.div 
       whileHover={{ y: -4, scale: 1.01 }}
       transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-      className="bg-brand-surface/90 backdrop-blur-3xl p-6 rounded-[2rem] border border-brand-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-xl hover:shadow-primary/10 transition-all relative overflow-hidden group z-10"
+      className="bg-brand-surface/90 backdrop-blur-3xl p-6 rounded-2xl border border-brand-border shadow-[0_2px_8px_rgba(0,0,0,0.04)] hover:shadow-xl hover:shadow-primary/10 transition-all relative overflow-hidden group z-10"
     >
       <div className="absolute top-0 right-0 p-4 opacity-5 group-hover:opacity-10 transition-all pointer-events-none transform translate-x-2 -translate-y-2 scale-150 rotate-[-10deg] group-hover:rotate-0">
         {icon}

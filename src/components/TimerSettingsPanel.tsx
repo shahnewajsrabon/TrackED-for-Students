@@ -32,7 +32,7 @@ export default function TimerSettingsPanel({
       animate={{ opacity: 1, x: 0 }}
       className="w-full md:w-[360px] space-y-6"
     >
-       <div className="bg-brand-surface p-8 rounded-[2rem] border border-brand-border shadow-sm hover:shadow-md transition-all">
+       <div className="bg-brand-surface p-8 rounded-2xl border border-brand-border shadow hover:shadow-md transition-all">
           <div className="flex justify-between items-center mb-8">
             <h3 className="text-xl font-bold flex items-center gap-2 text-brand-text-primary"><Settings className="w-5 h-5 text-primary" /> Timer Settings</h3>
           </div>
@@ -43,14 +43,14 @@ export default function TimerSettingsPanel({
                 <select 
                   value={config.subjectId || ''} 
                   onChange={e => setConfig({...config, subjectId: e.target.value})}
-                  className="w-full bg-brand-bg border border-brand-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-brand-text-primary"
+                  className="w-full bg-brand-bg border border-brand-border rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-brand-text-primary"
                 >
                   <option value="" disabled>Select subject...</option>
                   {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
                 </select>
              </div>
              
-             <div className="flex bg-brand-bg p-1 rounded-xl border border-brand-border mb-4">
+             <div className="flex bg-brand-bg p-1 rounded-2xl border border-brand-border mb-4">
                <button 
                  onClick={() => {
                     setConfig({...config, timerType: 'Pomodoro'});
@@ -81,7 +81,7 @@ export default function TimerSettingsPanel({
                       setConfig({...config, workDuration: val});
                       if(mode==='Focus' && !isActive) setTimeLeft(val * 60);
                     }}
-                    className="w-full bg-brand-bg border border-brand-border rounded-xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-brand-text-primary"
+                    className="w-full bg-brand-bg border border-brand-border rounded-2xl px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-primary text-brand-text-primary"
                   >
                     {[15, 20, 25, 30, 45, 60, 90, 120].map(v => <option key={v} value={v}>{v} minutes</option>)}
                   </select>

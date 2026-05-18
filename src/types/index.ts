@@ -14,6 +14,7 @@ export interface User {
   subjects: Subject[];
   badges: string[];
   created_at: string;
+  isOnline?: boolean;
 }
 
 export interface Session {

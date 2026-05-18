@@ -420,18 +420,18 @@ export default function TimerPage() {
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ type: 'spring', bounce: 0.5 }}
-          className="bg-brand-surface/80 backdrop-blur-3xl p-8 md:p-14 rounded-[3rem] shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-shadow border border-brand-border flex flex-col items-center w-full max-w-xl relative group z-10"
+          className="bg-brand-surface/80 backdrop-blur-3xl p-8 md:p-14 rounded-3xl shadow-2xl hover:shadow-[0_20px_50px_rgba(0,0,0,0.1)] transition-shadow border border-brand-border flex flex-col items-center w-full max-w-xl relative group z-10"
         >
               <button 
                 onClick={togglePiP}
-                className="absolute top-6 right-16 p-2 text-brand-text-secondary hover:text-brand-text-primary transition-colors opacity-0 group-hover:opacity-100 bg-brand-bg rounded-xl border border-brand-border"
+                className="absolute top-6 right-16 p-2 text-brand-text-secondary hover:text-brand-text-primary transition-colors opacity-0 group-hover:opacity-100 bg-brand-bg rounded-2xl border border-brand-border"
                 title="Picture-in-Picture"
               >
                 <ExternalLink className="w-5 h-5" />
               </button>
               <button 
                 onClick={toggleFullScreen}
-                className="absolute top-6 right-6 p-2 text-brand-text-secondary hover:text-brand-text-primary transition-colors opacity-0 group-hover:opacity-100 bg-brand-bg rounded-xl border border-brand-border"
+                className="absolute top-6 right-6 p-2 text-brand-text-secondary hover:text-brand-text-primary transition-colors opacity-0 group-hover:opacity-100 bg-brand-bg rounded-2xl border border-brand-border"
                 title="Full Screen"
               >
                 <Maximize className="w-5 h-5" />
@@ -489,7 +489,7 @@ export default function TimerPage() {
                    <motion.button 
                      whileTap={{ scale: 0.9 }} 
                      onClick={forceStopStopwatch} 
-                     className="w-20 h-12 px-4 flex items-center justify-center bg-danger hover:bg-danger/90 text-white rounded-xl transition-colors shadow-sm font-bold uppercase tracking-wider text-xs ml-2"
+                     className="w-20 h-12 px-4 flex items-center justify-center bg-danger hover:bg-danger/90 text-white rounded-2xl transition-colors shadow-sm font-bold uppercase tracking-wider text-xs ml-2"
                    >
                      Finish
                    </motion.button>
@@ -511,7 +511,7 @@ export default function TimerPage() {
             initial={{ opacity: 0, y: 15 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.1 }}
-            className="w-full max-w-xl mt-8 bg-brand-surface rounded-[2rem] p-8 border border-brand-border shadow-sm hover:shadow-md transition-shadow"
+            className="w-full max-w-xl mt-8 bg-brand-surface rounded-2xl p-8 border border-brand-border shadow hover:shadow-md transition-shadow"
           >
             <h3 className="font-bold mb-6 text-brand-text-primary flex items-center gap-2"><div className="w-2 h-2 bg-primary rounded-full shadow-[0_0_8px_var(--color-primary)]"></div> Today's Sessions</h3>
             <div className="space-y-4 max-h-[250px] overflow-y-auto pr-2 scrollbar-hide">

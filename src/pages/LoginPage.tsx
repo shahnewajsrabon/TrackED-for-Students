@@ -62,13 +62,13 @@ export default function LoginPage() {
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md relative z-10">
-        <div className="bg-brand-surface py-8 px-4 shadow-xl shadow-black/5 sm:rounded-3xl sm:px-10 border border-brand-border">
+        <div className="bg-brand-surface py-8 px-4 shadow-xl shadow-black/5 sm:rounded-2xl sm:px-10 border border-brand-border">
           
           <div>
             <button
               onClick={signInWithGoogle}
               disabled={loading}
-              className="flex w-full items-center justify-center gap-3 rounded-xl bg-brand-surface px-3 py-3 text-sm font-semibold text-brand-text-primary border border-brand-border hover:bg-brand-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-surface disabled:opacity-50 transition-colors"
+              className="flex w-full items-center justify-center gap-3 rounded-2xl bg-brand-surface px-3 py-3 text-sm font-semibold text-brand-text-primary border border-brand-border hover:bg-brand-bg focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-brand-surface disabled:opacity-50 transition-colors"
             >
               <svg className="h-5 w-5" viewBox="0 0 24 24">
                 <path
@@ -110,7 +110,7 @@ export default function LoginPage() {
                 type="email"
                 value={email}
                 onChange={e => setEmail(e.target.value)}
-                className="block w-full appearance-none rounded-xl border border-brand-border bg-brand-bg px-4 py-3 placeholder-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
+                className="block w-full appearance-none rounded-2xl border border-brand-border bg-brand-bg px-4 py-3 placeholder-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               />
             </div>
 
@@ -120,14 +120,14 @@ export default function LoginPage() {
                 type="password"
                 value={password}
                 onChange={e => setPassword(e.target.value)}
-                className="block w-full appearance-none rounded-xl border border-brand-border bg-brand-bg px-4 py-3 placeholder-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
+                className="block w-full appearance-none rounded-2xl border border-brand-border bg-brand-bg px-4 py-3 placeholder-gray-400 focus:border-primary focus:outline-none focus:ring-1 focus:ring-primary sm:text-sm"
               />
             </div>
 
             <button
               type="submit"
               disabled={loading}
-              className="flex w-full justify-center rounded-xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 transition-colors mt-2"
+              className="flex w-full justify-center rounded-2xl bg-primary px-4 py-3 text-sm font-semibold text-white hover:bg-primary/90 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-primary disabled:opacity-50 transition-colors mt-2"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : (isLogin ? 'Sign in' : 'Create account')}
             </button>

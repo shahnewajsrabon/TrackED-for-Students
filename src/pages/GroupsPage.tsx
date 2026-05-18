@@ -105,14 +105,14 @@ export default function GroupsPage() {
         <div className="flex gap-2 w-full md:w-auto">
           <button 
             onClick={() => setShowCreate(true)}
-            className="flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-xl font-semibold hover:bg-primary/90 transition-colors flex-1 md:flex-none shadow-sm"
+            className="flex items-center justify-center gap-2 bg-primary text-white px-5 py-2.5 rounded-2xl font-semibold hover:bg-primary/90 transition-colors flex-1 md:flex-none shadow-sm"
           >
             <Plus className="w-4 h-4" /> Create
           </button>
         </div>
       </div>
 
-      <div className="bg-brand-surface p-6 rounded-3xl border border-brand-border">
+      <div className="bg-brand-surface p-6 rounded-2xl border border-brand-border">
          <h2 className="text-xl font-bold mb-6 flex items-center gap-2"><Users className="w-5 h-5 text-primary" /> My Groups</h2>
          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-4">
             {myGroups.map(g => (
@@ -140,7 +140,7 @@ export default function GroupsPage() {
       </div>
 
       <div className="grid md:grid-cols-3 gap-8">
-        <div className="md:col-span-2 bg-white p-6 rounded-3xl border border-brand-border">
+        <div className="md:col-span-2 bg-white p-6 rounded-2xl border border-brand-border">
           <div className="flex justify-between items-center mb-6">
             <h2 className="text-xl font-bold">Discover Public Groups</h2>
             <div className="relative">
@@ -157,7 +157,7 @@ export default function GroupsPage() {
           
           <div className="space-y-3">
             {filteredDiscover.map(g => (
-              <div key={g.id} className="flex items-center justify-between p-4 border border-brand-border rounded-xl">
+              <div key={g.id} className="flex items-center justify-between p-4 border border-brand-border rounded-2xl">
                 <div>
                   <h3 className="font-semibold">{g.name}</h3>
                   <div className="flex items-center gap-3 mt-1 text-xs text-brand-text-secondary">
@@ -167,7 +167,7 @@ export default function GroupsPage() {
                 </div>
                 <button 
                   onClick={() => handleJoin(g.invite_code)}
-                  className="px-4 py-2 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-semibold transition-colors"
+                  className="px-5 py-2.5 bg-gray-100 hover:bg-gray-200 rounded-lg text-sm font-semibold transition-colors"
                 >
                   Join
                 </button>
@@ -179,7 +179,7 @@ export default function GroupsPage() {
           </div>
         </div>
 
-        <div className="bg-white p-6 rounded-3xl border border-brand-border h-fit">
+        <div className="bg-white p-6 rounded-2xl border border-brand-border h-fit">
           <h2 className="text-lg font-bold mb-4 flex items-center gap-2"><Hash className="w-5 h-5 text-primary" /> Join with Code</h2>
           <p className="text-sm text-brand-text-secondary mb-4">Have an invite code from a friend? Enter it here to join their private group.</p>
           <div className="flex gap-2">
@@ -192,7 +192,7 @@ export default function GroupsPage() {
             />
             <button 
               onClick={() => handleJoin(inviteCode)}
-              className="bg-primary text-white px-4 py-2 rounded-lg font-medium text-sm hover:bg-primary/90"
+              className="bg-primary text-white px-5 py-2.5 rounded-lg font-medium text-sm hover:bg-primary/90"
             >
               Join
             </button>
@@ -202,28 +202,28 @@ export default function GroupsPage() {
 
       {showCreate && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/40 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl p-8 max-w-md w-full">
+          <div className="bg-white rounded-2xl p-8 max-w-md w-full">
             <h2 className="text-2xl font-bold mb-6">Create Group</h2>
             <form onSubmit={handleCreate} className="space-y-4">
               <div>
                 <label className="block text-sm font-medium mb-1">Group Name</label>
-                <input required type="text" value={newGroup.name} onChange={e => setNewGroup({...newGroup, name: e.target.value})} className="w-full p-3 border rounded-xl" />
+                <input required type="text" value={newGroup.name} onChange={e => setNewGroup({...newGroup, name: e.target.value})} className="w-full p-3 border rounded-2xl" />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Subject / Topic</label>
-                <input required type="text" value={newGroup.subject} onChange={e => setNewGroup({...newGroup, subject: e.target.value})} className="w-full p-3 border rounded-xl" />
+                <input required type="text" value={newGroup.subject} onChange={e => setNewGroup({...newGroup, subject: e.target.value})} className="w-full p-3 border rounded-2xl" />
               </div>
               <div>
                 <label className="block text-sm font-medium mb-1">Description (Optional)</label>
-                <textarea value={newGroup.description} onChange={e => setNewGroup({...newGroup, description: e.target.value})} className="w-full p-3 border rounded-xl h-20 resize-none" />
+                <textarea value={newGroup.description} onChange={e => setNewGroup({...newGroup, description: e.target.value})} className="w-full p-3 border rounded-2xl h-20 resize-none" />
               </div>
               <div className="flex items-center gap-2 pt-2">
                 <input type="checkbox" id="private" checked={newGroup.is_private} onChange={e => setNewGroup({...newGroup, is_private: e.target.checked})} className="w-4 h-4 text-primary" />
                 <label htmlFor="private" className="text-sm font-medium">Make Private (Invite code only)</label>
               </div>
               <div className="flex gap-3 pt-4">
-                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 p-3 bg-gray-100 rounded-xl font-semibold">Cancel</button>
-                <button type="submit" className="flex-1 p-3 bg-primary text-white rounded-xl font-semibold">Create</button>
+                <button type="button" onClick={() => setShowCreate(false)} className="flex-1 p-3 bg-gray-100 rounded-2xl font-semibold">Cancel</button>
+                <button type="submit" className="flex-1 p-3 bg-primary text-white rounded-2xl font-semibold">Create</button>
               </div>
             </form>
           </div>

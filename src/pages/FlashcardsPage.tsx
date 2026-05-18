@@ -186,7 +186,7 @@ export default function FlashcardsPage() {
           >
             {/* Front */}
             <div 
-              className="absolute inset-0 bg-brand-surface rounded-[2rem] border border-brand-border shadow-lg hover:shadow-xl flex flex-col items-center justify-center p-12 backface-hidden transition-all bg-gradient-to-br from-brand-surface to-brand-bg group-hover:-translate-y-1"
+              className="absolute inset-0 bg-brand-surface rounded-2xl border border-brand-border shadow-lg hover:shadow-xl flex flex-col items-center justify-center p-12 backface-hidden transition-all bg-gradient-to-br from-brand-surface to-brand-bg group-hover:-translate-y-1"
               style={{ backfaceVisibility: 'hidden' }}
             >
               <h3 className="text-3xl md:text-5xl font-extrabold text-center text-brand-text-primary z-10 leading-tight">
@@ -199,7 +199,7 @@ export default function FlashcardsPage() {
 
             {/* Back */}
             <div 
-              className="absolute inset-0 bg-primary rounded-[2rem] border border-primary/50 shadow-xl flex flex-col items-center justify-center p-12 backface-hidden text-white"
+              className="absolute inset-0 bg-primary rounded-2xl border border-primary/50 shadow-xl flex flex-col items-center justify-center p-12 backface-hidden text-white"
               style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
             >
               <h3 className="text-3xl md:text-5xl font-extrabold text-center z-10 leading-tight drop-shadow-md">
@@ -261,10 +261,10 @@ export default function FlashcardsPage() {
       transition={{ duration: 0.3 }}
       className="max-w-6xl mx-auto space-y-8"
     >
-      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-brand-surface p-8 rounded-3xl border border-brand-border shadow-sm">
+      <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 bg-brand-surface p-8 rounded-2xl border border-brand-border shadow-sm">
         <div>
           <h1 className="text-4xl font-black tracking-tight flex items-center gap-4 drop-shadow-sm text-brand-text-primary">
-            <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
+            <div className="p-2.5 bg-primary/10 rounded-2xl text-primary">
               <BrainCircuit className="w-8 h-8" />
             </div>
             Flashcards
@@ -275,7 +275,7 @@ export default function FlashcardsPage() {
 
       <div className="grid lg:grid-cols-3 gap-8">
         <div className="space-y-6">
-          <div className="bg-brand-surface rounded-3xl border border-brand-border p-6 shadow-sm">
+          <div className="bg-brand-surface rounded-2xl border border-brand-border p-6 shadow-sm">
             <h2 className="font-bold text-xl mb-4 text-brand-text-primary">Your Decks</h2>
             <form onSubmit={handleCreateDeck} className="space-y-3 mb-6 bg-brand-bg p-4 rounded-2xl border border-brand-border">
               <input
@@ -283,17 +283,17 @@ export default function FlashcardsPage() {
                 placeholder="Deck Title"
                 value={newDeckTitle}
                 onChange={(e) => setNewDeckTitle(e.target.value)}
-                className="w-full bg-brand-surface border border-brand-border rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm font-medium"
+                className="w-full bg-brand-surface border border-brand-border rounded-2xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm font-medium"
               />
               <select
                 value={newDeckSubject}
                 onChange={(e) => setNewDeckSubject(e.target.value)}
-                className="w-full bg-brand-surface border border-brand-border rounded-xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm font-medium"
+                className="w-full bg-brand-surface border border-brand-border rounded-2xl px-4 py-2.5 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm font-medium"
               >
                 <option value="">No Subject</option>
                 {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
               </select>
-              <button type="submit" disabled={!newDeckTitle.trim()} className="w-full bg-primary text-white py-2.5 rounded-xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-transform active:scale-95 shadow-md">
+              <button type="submit" disabled={!newDeckTitle.trim()} className="w-full bg-primary text-white py-2.5 rounded-2xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-transform active:scale-95 shadow-md">
                 Create Deck
               </button>
             </form>
@@ -331,7 +331,7 @@ export default function FlashcardsPage() {
             <motion.div 
               initial={{ opacity: 0, x: 20 }}
               animate={{ opacity: 1, x: 0 }}
-              className="bg-brand-surface rounded-[2.5rem] border border-brand-border p-8 md:p-10 shadow-sm space-y-10"
+              className="bg-brand-surface rounded-2xl border border-brand-border p-8 md:p-10 shadow-sm space-y-10"
             >
               <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 border-b border-brand-border pb-8">
                 <div>
@@ -347,7 +347,7 @@ export default function FlashcardsPage() {
                     setStudyMode(true);
                   }}
                   disabled={!activeDeck.cards || activeDeck.cards.length === 0}
-                  className="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
+                  className="bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
                 >
                   <Play className="w-5 h-5 fill-current" /> Study Now
                 </motion.button>
@@ -360,17 +360,17 @@ export default function FlashcardsPage() {
                     placeholder="Question (e.g., What is the capital of France?)"
                     value={newCardQ}
                     onChange={(e) => setNewCardQ(e.target.value)}
-                    className="bg-brand-surface border border-brand-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm min-h-[100px] resize-none font-medium"
+                    className="bg-brand-surface border border-brand-border rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm min-h-[100px] resize-none font-medium"
                   />
                   <textarea
                     placeholder="Answer (e.g., Paris)"
                     value={newCardA}
                     onChange={(e) => setNewCardA(e.target.value)}
-                    className="bg-brand-surface border border-brand-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm min-h-[100px] resize-none font-medium"
+                    className="bg-brand-surface border border-brand-border rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm min-h-[100px] resize-none font-medium"
                   />
                 </div>
                 <div className="flex justify-end">
-                  <button type="submit" disabled={!newCardQ.trim() || !newCardA.trim()} className="bg-primary text-white px-6 py-2.5 rounded-xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-transform active:scale-95 shadow-md flex items-center gap-2">
+                  <button type="submit" disabled={!newCardQ.trim() || !newCardA.trim()} className="bg-primary text-white px-5 py-2.5 rounded-2xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-transform active:scale-95 shadow-md flex items-center gap-2">
                     <Plus className="w-5 h-5" /> Add Card
                   </button>
                 </div>
@@ -385,13 +385,13 @@ export default function FlashcardsPage() {
                   placeholder="Paste your study material here, and Gemini will generate flashcards for you..."
                   value={aiPrompt}
                   onChange={(e) => setAiPrompt(e.target.value)}
-                  className="w-full bg-brand-surface border border-brand-border rounded-xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm min-h-[100px] font-medium resize-y"
+                  className="w-full bg-brand-surface border border-brand-border rounded-2xl px-4 py-3 focus:outline-none focus:ring-2 focus:ring-primary shadow-sm min-h-[100px] font-medium resize-y"
                 />
                 <div className="flex justify-end">
                   <button 
                     onClick={handleAIGenerate}
                     disabled={isGenerating || !aiPrompt.trim()} 
-                    className="bg-brand-text-primary text-brand-bg px-6 py-2.5 rounded-xl font-bold hover:opacity-90 disabled:opacity-50 transition-transform active:scale-95 shadow-md flex items-center gap-2"
+                    className="bg-brand-text-primary text-brand-bg px-5 py-2.5 rounded-2xl font-bold hover:opacity-90 disabled:opacity-50 transition-transform active:scale-95 shadow-md flex items-center gap-2"
                   >
                     {isGenerating ? (
                       <div className="w-5 h-5 rounded-full border-2 border-brand-bg border-t-transparent animate-spin" />
@@ -425,10 +425,10 @@ export default function FlashcardsPage() {
               </div>
             </motion.div>
           ) : (
-             <div className="h-full flex flex-col items-center justify-center p-12 text-center bg-brand-surface rounded-3xl border border-dashed border-brand-border group relative overflow-hidden">
+             <div className="h-full flex flex-col items-center justify-center p-12 text-center bg-brand-surface rounded-2xl border border-dashed border-brand-border group relative overflow-hidden">
                {decks.length === 0 ? (
                  <>
-                   <div className="p-6 bg-brand-bg rounded-[2rem] border border-brand-border shadow-sm mb-6 group-hover:bg-primary/10 transition-colors">
+                   <div className="p-6 bg-brand-bg rounded-2xl border border-brand-border shadow-sm mb-6 group-hover:bg-primary/10 transition-colors">
                      <Wand2 className="w-16 h-16 text-primary" />
                    </div>
                    <h3 className="text-2xl font-black text-brand-text-primary mb-4">Let AI build your decks.</h3>
@@ -436,7 +436,7 @@ export default function FlashcardsPage() {
                  </>
                ) : (
                  <>
-                   <div className="p-6 bg-brand-bg rounded-[2rem] border border-brand-border shadow-sm mb-6">
+                   <div className="p-6 bg-brand-bg rounded-2xl border border-brand-border shadow-sm mb-6">
                      <BrainCircuit className="w-16 h-16 text-gray-300" />
                    </div>
                    <h3 className="text-2xl font-black text-brand-text-primary mb-2">Select a deck</h3>

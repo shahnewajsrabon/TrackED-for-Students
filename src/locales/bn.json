@@ -1,0 +1,34 @@
+{
+  "nav": {
+    "dashboard": "ড্যাশবোর্ড",
+    "planner": "প্ল্যানার",
+    "focus": "ফোকাস",
+    "notes": "নোটস",
+    "flashcards": "ফ্ল্যাশকার্ড",
+    "chat": "এআই (AI)",
+    "profile": "প্রোফাইল",
+    "tools": "টুলস"
+  },
+  "dashboard": {
+    "welcome": "স্বাগতম",
+    "ready": "আজকের লক্ষ্য অর্জনে প্রস্তুত?",
+    "studyTime": "পড়ার সময়",
+    "thisWeek": "এই সপ্তাহে",
+    "tasksCompleted": "সম্পন্ন কাজ",
+    "outOf": "এর মধ্যে",
+    "activeSubjects": "সক্রিয় বিষয়",
+    "learning": "শেখা হচ্ছে",
+    "upcomingExams": "আসন্ন পরীক্ষাসমূহ",
+    "noExams": "কোনো আসন্ন পরীক্ষা নেই।",
+    "addExamsMsg": "পরীক্ষা ট্র্যাক করতে প্রোফাইলে এগুলি যোগ করুন।",
+    "dailyGoals": "দৈনন্দিন লক্ষ্য",
+    "noGoals": "আজকের কোনো কাজ নেই।",
+    "addGoalsMsg": "কিছু কাজ যোগ করতে প্ল্যানারে যান।"
+  },
+  "settings": {
+    "language": "ভাষা",
+    "english": "English",
+    "bengali": "বাংলা",
+    "theme": "থিম"
+  }
+}

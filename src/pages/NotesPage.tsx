@@ -220,10 +220,10 @@ export default function NotesPage() {
       transition={{ duration: 0.3 }}
       className="max-w-7xl mx-auto h-[calc(100vh-6rem)] flex flex-col space-y-6"
     >
-      <div className="flex items-center justify-between bg-brand-surface p-8 rounded-3xl border border-brand-border shadow-sm shrink-0">
+      <div className="flex items-center justify-between bg-brand-surface p-8 rounded-2xl border border-brand-border shadow-sm shrink-0">
         <div>
           <h1 className="text-4xl font-black tracking-tight flex items-center gap-4 text-brand-text-primary drop-shadow-sm">
-            <div className="p-2.5 bg-primary/10 rounded-xl text-primary">
+            <div className="p-2.5 bg-primary/10 rounded-2xl text-primary">
               <FileText className="w-8 h-8" />
             </div>
             Notes
@@ -234,7 +234,7 @@ export default function NotesPage() {
           whileHover={{ scale: 1.02, y: -2 }}
           whileTap={{ scale: 0.98 }}
           onClick={() => handleCreateNote()}
-          className="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
+          className="bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
         >
           <Plus className="w-5 h-5" /> New Note
         </motion.button>
@@ -242,7 +242,7 @@ export default function NotesPage() {
 
       <div className="flex-1 flex flex-col md:flex-row gap-8 min-h-0">
         {/* Sidebar */}
-        <div className="w-full md:w-80 flex flex-col bg-brand-surface border border-brand-border rounded-[2rem] shadow-sm shrink-0 overflow-hidden">
+        <div className="w-full md:w-80 flex flex-col bg-brand-surface border border-brand-border rounded-2xl shadow-sm shrink-0 overflow-hidden">
           <div className="p-6 border-b border-brand-border bg-gray-50 flex items-center gap-3">
             <MessageSquare className="w-5 h-5 text-primary" />
             <h2 className="font-bold text-brand-text-primary text-lg">All Notes</h2>
@@ -292,7 +292,7 @@ export default function NotesPage() {
         </div>
 
         {/* Note Editor/Viewer */}
-        <div className="flex-1 bg-brand-surface border border-brand-border rounded-[2rem] shadow-sm overflow-hidden flex flex-col relative">
+        <div className="flex-1 bg-brand-surface border border-brand-border rounded-2xl shadow-sm overflow-hidden flex flex-col relative">
           {activeNote ? (
             <>
               <div className="border-b border-brand-border p-6 md:p-8 flex flex-col sm:flex-row gap-6 items-start sm:items-center justify-between bg-brand-bg">
@@ -302,12 +302,12 @@ export default function NotesPage() {
                       type="text" 
                       value={editTitle}
                       onChange={e => setEditTitle(e.target.value)}
-                      className="flex-1 bg-white border border-brand-border rounded-xl px-5 py-3 font-bold text-xl focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
+                      className="flex-1 bg-white border border-brand-border rounded-2xl px-5 py-2.5 font-bold text-xl focus:outline-none focus:ring-2 focus:ring-primary shadow-sm"
                     />
                     <select
                       value={editSubjectId}
                       onChange={e => setEditSubjectId(e.target.value)}
-                      className="bg-white border border-brand-border rounded-xl px-5 py-3 font-bold text-brand-text-primary focus:outline-none focus:ring-2 focus:ring-primary shadow-sm w-48"
+                      className="bg-white border border-brand-border rounded-2xl px-5 py-2.5 font-bold text-brand-text-primary focus:outline-none focus:ring-2 focus:ring-primary shadow-sm w-48"
                     >
                       <option value="">No Subject</option>
                       {subjects.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
@@ -322,7 +322,7 @@ export default function NotesPage() {
                           href={`https://mail.google.com/mail/?view=cm&fs=1&tf=1&to=${user?.email}&su=${encodeURIComponent(activeNote.title)}&body=${encodeURIComponent(activeNote.content + '\n\n---\nSent from TrackEd')}`}
                           target="_blank"
                           rel="noreferrer"
-                          className="bg-brand-bg hover:bg-gray-100 text-brand-text-primary border border-brand-border p-2.5 rounded-xl transition-colors shadow-sm"
+                          className="bg-brand-bg hover:bg-gray-100 text-brand-text-primary border border-brand-border p-2.5 rounded-2xl transition-colors shadow-sm"
                           title="Send to Gmail"
                         >
                           <Mail className="w-5 h-5 text-primary" />
@@ -350,7 +350,7 @@ export default function NotesPage() {
                       <button 
                         onClick={handleAIEnhance} 
                         disabled={isEnhancing || !editContent.trim()}
-                        className="bg-brand-surface border border-brand-border text-brand-text-primary px-4 py-2.5 rounded-xl font-bold hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
+                        className="bg-brand-surface border border-brand-border text-brand-text-primary px-4 py-2.5 rounded-2xl font-bold hover:bg-gray-100 transition-colors shadow-sm flex items-center justify-center gap-2 disabled:opacity-50"
                       >
                         {isEnhancing ? (
                           <div className="w-4 h-4 rounded-full border-2 border-primary border-t-transparent animate-spin" />
@@ -359,7 +359,7 @@ export default function NotesPage() {
                         )}
                         Enhance
                       </button>
-                      <button onClick={handleSaveNote} className="flex-1 sm:flex-none bg-primary text-white px-5 py-2.5 rounded-xl font-bold hover:bg-primary/90 transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2">
+                      <button onClick={handleSaveNote} className="flex-1 sm:flex-none bg-primary text-white px-5 py-2.5 rounded-2xl font-bold hover:bg-primary/90 transition-transform active:scale-95 shadow-md flex items-center justify-center gap-2">
                         <Save className="w-5 h-5" /> Done
                       </button>
                     </>
@@ -370,7 +370,7 @@ export default function NotesPage() {
                         setEditContent(activeNote.content || '');
                         setEditSubjectId(activeNote.subject_id || '');
                       }} 
-                      className="flex-1 sm:flex-none bg-white border border-brand-border px-6 py-3 rounded-xl font-bold hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center gap-2"
+                      className="flex-1 sm:flex-none bg-white border border-brand-border px-6 py-3 rounded-2xl font-bold hover:bg-gray-50 transition-colors shadow-sm flex items-center justify-center gap-2"
                     >
                       <Edit className="w-5 h-5" /> Edit Page
                     </button>
@@ -414,21 +414,21 @@ export default function NotesPage() {
              <div className="h-full flex flex-col items-center justify-center p-12 text-center text-brand-text-secondary bg-brand-surface relative group">
                {notes.length === 0 ? (
                  <>
-                   <div className="p-6 bg-brand-bg rounded-[2rem] border border-dashed border-brand-border mb-6 group-hover:bg-primary/5 transition-colors">
+                   <div className="p-6 bg-brand-bg rounded-2xl border border-dashed border-brand-border mb-6 group-hover:bg-primary/5 transition-colors">
                      <Wand2 className="w-16 h-16 text-primary" />
                    </div>
                    <h3 className="text-2xl font-black text-brand-text-primary mb-4">No notes? No problem.</h3>
                    <p className="font-medium max-w-md mx-auto mb-8 text-lg">Create a new note or ask the AI Tutor to generate flashcards and summaries from your pictures.</p>
                    <button 
                       onClick={() => handleCreateNote()}
-                      className="bg-primary text-white px-8 py-4 rounded-xl font-bold hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
+                      className="bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:bg-primary/90 transition-all shadow-xl shadow-primary/20 flex items-center gap-2"
                     >
                       <Plus className="w-5 h-5" /> Start First Note
                     </button>
                  </>
                ) : (
                  <>
-                   <div className="p-6 bg-brand-bg rounded-[2rem] border border-dashed border-brand-border mb-6">
+                   <div className="p-6 bg-brand-bg rounded-2xl border border-dashed border-brand-border mb-6">
                      <FileText className="w-16 h-16 text-gray-300" />
                    </div>
                    <h3 className="text-2xl font-black text-brand-text-primary mb-2">Select a note</h3>

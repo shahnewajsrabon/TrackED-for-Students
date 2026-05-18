@@ -30,65 +30,87 @@ export default function GroupChatPage() {
   useEffect(() => {
     if (!id || !user) return;
 
-    const loadGroupData = async () => {
-      try {
-        const docRef = doc(db, 'groups', id);
-        const docSnap = await getDoc(docRef);
-        if (!docSnap.exists()) throw new Error('Group not found');
-        const gData = { id: docSnap.id, ...docSnap.data() } as Group;
-        setGroup(gData);
+    let unsubscribeGroup: () => void;
+    let unsubscribeMembers: () => void;
 
-        const memMap: Record<string, User> = {};
-        if (gData.member_ids.length > 0) {
-           const uQuery = query(collection(db, 'users'), where('id', 'in', gData.member_ids));
-           const uSnap = await getDocs(uQuery);
-           uSnap.forEach(d => { memMap[d.id] = d.data() as User; });
-        }
-        setMembers(memMap);
+    // Load group real-time
+    const docRef = doc(db, 'groups', id);
+    unsubscribeGroup = onSnapshot(docRef, async (docSnap) => {
+      if (!docSnap.exists()) {
+        toast.error('Group not found');
+        setLoading(false);
+        return;
+      }
+      
+      const gData = { id: docSnap.id, ...docSnap.data() } as Group;
+      setGroup(gData);
 
-        const startOfWeek = new Date();
-        startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
-        
-        let sessData: any[] = [];
-        if (gData.member_ids.length > 0) {
-           const sQuery = query(
-             collection(db, 'sessions'), 
-             where('user_id', 'in', gData.member_ids),
-             where('started_at', '>=', startOfWeek.toISOString())
-           );
-           const sSnap = await getDocs(sQuery);
-           sSnap.forEach(d => sessData.push(d.data()));
-        }
+      // Now fetch members real-time
+      if (gData.member_ids.length > 0) {
+        const uQuery = query(collection(db, 'users'), where('id', 'in', gData.member_ids));
+        if (unsubscribeMembers) unsubscribeMembers();
 
-        const hoursMap: Record<string, number> = {};
-        sessData.forEach(s => {
-          hoursMap[s.user_id] = (hoursMap[s.user_id] || 0) + s.duration_mins;
+        unsubscribeMembers = onSnapshot(uQuery, async (uSnap) => {
+          const memMap: Record<string, User> = {};
+          uSnap.forEach(d => { memMap[d.id] = d.data() as User; });
+          setMembers(memMap);
+
+          // Build static leaderboard (sessions could be real-time too, but keeping it simple)
+          try {
+            const startOfWeek = new Date();
+            startOfWeek.setDate(startOfWeek.getDate() - startOfWeek.getDay());
+            
+            const sQuery = query(
+              collection(db, 'sessions'), 
+              where('user_id', 'in', gData.member_ids),
+              where('started_at', '>=', startOfWeek.toISOString())
+            );
+            const sSnap = await getDocs(sQuery);
+            let sessData: any[] = [];
+            sSnap.forEach(d => sessData.push(d.data()));
+
+            const hoursMap: Record<string, number> = {};
+            sessData.forEach(s => {
+              hoursMap[s.user_id] = (hoursMap[s.user_id] || 0) + s.duration_mins;
+            });
+
+            const lb = Object.values(memMap).map(m => ({
+              ...m,
+              hours: (hoursMap[m.id] || 0) / 60
+            })).sort((a,b) => b.hours - a.hours);
+            
+            setLeaderboard(lb);
+          } catch(e) {
+            console.error(e);
+          }
+          setLoading(false);
+        }, (err) => {
+          console.error(err);
+          setLoading(false);
         });
-
-        const lb = Object.values(memMap).map(m => ({
-          ...m,
-          hours: (hoursMap[m.id] || 0) / 60
-        })).sort((a,b) => b.hours - a.hours);
-        setLeaderboard(lb);
-
-      } catch (err: any) {
-        toast.error('Failed to load group data');
-      } finally {
+      } else {
+        setMembers({});
+        setLeaderboard([]);
         setLoading(false);
       }
-    };
-
-    loadGroupData();
+    }, (err) => {
+      console.error(err);
+      toast.error('Failed to load group data');
+      setLoading(false);
+    });
 
     const mQuery = query(collection(db, 'messages'), where('group_id', '==', id), orderBy('created_at', 'asc'), limit(100));
-    const unsubscribe = onSnapshot(mQuery, async (snapshot) => {
-      const msgs = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() } as Message));
-      // Optionally fetch missing user details if needed, but we rely on members map for now
+    const unsubscribeMessages = onSnapshot(mQuery, (snapshot) => {
+      const msgs = snapshot.docs.map(d => ({ id: d.id, ...d.data() } as Message));
       setMessages(msgs);
       setTimeout(() => endRef.current?.scrollIntoView({ behavior: 'smooth' }), 100);
     });
 
-    return () => { unsubscribe(); };
+    return () => { 
+      if (unsubscribeGroup) unsubscribeGroup();
+      if (unsubscribeMembers) unsubscribeMembers();
+      if (unsubscribeMessages) unsubscribeMessages();
+    };
   }, [id, user]);
 
   const handleSend = async (e: React.FormEvent) => {
@@ -163,7 +185,7 @@ export default function GroupChatPage() {
         <button 
           onClick={startFocusRoom}
           disabled={creatingMeet}
-          className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white px-4 py-2 rounded-xl text-xs md:text-sm font-semibold transition-colors shadow-sm flex items-center gap-2"
+          className="bg-primary hover:bg-primary/90 disabled:opacity-50 text-white px-5 py-2.5 rounded-2xl text-xs md:text-sm font-semibold transition-colors shadow-sm flex items-center gap-2"
         >
           {creatingMeet ? <Loader2 className="w-4 h-4 animate-spin" /> : null}
           Start Focus Room
@@ -229,12 +251,12 @@ export default function GroupChatPage() {
                 value={newMessage}
                 onChange={e => setNewMessage(e.target.value)}
                 placeholder="Type a message..."
-                className="flex-1 bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
+                className="flex-1 bg-gray-50 border border-gray-200 rounded-2xl px-4 py-3 text-sm focus:outline-none focus:ring-2 focus:ring-primary focus:border-transparent"
               />
               <button 
                 type="submit" 
                 disabled={!newMessage.trim()}
-                className="bg-primary text-white p-3 rounded-xl disabled:opacity-50 transition-colors shadow-sm disabled:shadow-none hover:bg-primary/90"
+                className="bg-primary text-white p-3 rounded-2xl disabled:opacity-50 transition-colors shadow-sm disabled:shadow-none hover:bg-primary/90"
               >
                 <Send className="w-5 h-5 absolute -translate-x-[2px] opacity-0" />
                 <Send className="w-5 h-5 -ml-0.5" />
@@ -255,11 +277,14 @@ export default function GroupChatPage() {
                   <div className="w-6 text-center font-bold text-gray-400 text-sm">
                     {i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1}
                   </div>
-                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0">
+                  <div className="w-8 h-8 rounded-full bg-primary/10 flex items-center justify-center text-primary font-bold text-xs shrink-0 relative">
                     {m.avatar_url ? <img src={m.avatar_url} className="w-full h-full rounded-full object-cover" /> : m.display_name?.charAt(0).toUpperCase()}
+                    {m.isOnline && <div className="absolute bottom-0 right-0 w-2.5 h-2.5 bg-green-500 rounded-full border-2 border-white"></div>}
                   </div>
                   <div className="flex-1 min-w-0">
-                    <div className="font-semibold text-sm truncate">{m.display_name}</div>
+                    <div className="font-semibold text-sm truncate flex items-center gap-1">
+                      {m.display_name} 
+                    </div>
                     <div className="text-xs text-brand-text-secondary">{m.hours.toFixed(1)} hrs</div>
                   </div>
                 </div>

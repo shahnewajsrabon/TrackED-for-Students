@@ -55,7 +55,7 @@ export default function HeatmapCalendar({ sessions }: HeatmapProps) {
                   key={dIndex}
                   className={`w-2.5 h-2.5 rounded-full transition-transform hover:scale-150 hover:bg-brand-text-primary cursor-pointer relative group ${getColorClass(mins)}`}
                 >
-                  <div className="absolute opacity-0 group-hover:opacity-100 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-brand-text-primary text-brand-bg font-bold tracking-widest uppercase text-[10px] py-1 px-2 rounded-xl whitespace-nowrap z-10 pointer-events-none transition-opacity shadow-lg backdrop-blur-md">
+                  <div className="absolute opacity-0 group-hover:opacity-100 bottom-full left-1/2 -translate-x-1/2 mb-2 bg-brand-text-primary text-brand-bg font-bold tracking-widest uppercase text-[10px] py-1 px-2 rounded-2xl whitespace-nowrap z-10 pointer-events-none transition-opacity shadow-lg backdrop-blur-md">
                     {format(day, 'MMM d, yyyy')}: {hrs} hrs
                   </div>
                 </div>

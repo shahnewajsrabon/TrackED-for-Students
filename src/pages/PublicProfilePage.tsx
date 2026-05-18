@@ -70,7 +70,7 @@ export default function PublicProfilePage() {
       <div className="max-w-4xl mx-auto space-y-8">
         
         {/* Header Profile Card */}
-        <div className="bg-brand-surface p-8 rounded-3xl border border-brand-border flex flex-col md:flex-row items-center gap-8 shadow-sm">
+        <div className="bg-brand-surface p-8 rounded-2xl border border-brand-border flex flex-col md:flex-row items-center gap-8 shadow-sm">
           <div className="shrink-0 relative">
             <XPProgressRing 
               xp={userData.xp} 
@@ -87,23 +87,23 @@ export default function PublicProfilePage() {
           <div className="flex-1 text-center md:text-left">
             <h1 className="text-4xl font-bold mb-2 text-brand-text-primary">{userData.display_name}</h1>
             <p className="text-brand-text-secondary font-medium mb-4">@{userData.username}</p>
-            <div className="inline-flex items-center gap-2 bg-warning/10 text-warning px-4 py-2 rounded-xl font-bold">
+            <div className="inline-flex items-center gap-2 bg-warning/10 text-warning px-5 py-2.5 rounded-2xl font-bold">
               <Award className="w-5 h-5 -mt-0.5" /> Level: {userData.level} ({userData.xp} XP)
             </div>
-            <div className="mt-4 inline-flex items-center gap-2 bg-primary/10 text-primary px-4 py-2 rounded-xl font-bold">
+            <div className="mt-4 inline-flex items-center gap-2 bg-primary/10 text-primary px-5 py-2.5 rounded-2xl font-bold">
               <Clock className="w-5 h-5 -mt-0.5" /> Total Study: {totalHrs} hrs
             </div>
           </div>
         </div>
 
         {/* Heatmap */}
-        <div className="bg-brand-surface p-8 rounded-3xl border border-brand-border shadow-sm overflow-x-auto">
+        <div className="bg-brand-surface p-8 rounded-2xl border border-brand-border shadow-sm overflow-x-auto">
           <h2 className="text-xl font-bold mb-6 text-brand-text-primary">Study Consistency</h2>
           <HeatmapCalendar sessions={sessions} />
         </div>
 
         {/* Badges */}
-        <div className="bg-brand-surface p-8 rounded-3xl border border-brand-border shadow-sm">
+        <div className="bg-brand-surface p-8 rounded-2xl border border-brand-border shadow-sm">
            <h2 className="text-xl font-bold mb-6 flex items-center gap-2 text-brand-text-primary"><Award className="w-5 h-5 text-primary" /> Earned Badges</h2>
            <BadgeGrid badges={userData.badges || []} />
         </div>

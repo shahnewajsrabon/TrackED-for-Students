@@ -121,7 +121,7 @@ export default function OnboardingPage() {
         />
       </div>
 
-      <div className="bg-brand-surface rounded-3xl p-8 border border-brand-border shadow-xl shadow-gray-200/50 min-h-[400px] relative overflow-hidden">
+      <div className="bg-brand-surface rounded-2xl p-8 border border-brand-border shadow-xl shadow-gray-200/50 min-h-[400px] relative overflow-hidden">
         <AnimatePresence mode="wait">
           {step === 1 && (
             <motion.div
@@ -143,7 +143,7 @@ export default function OnboardingPage() {
                   value={displayName}
                   onChange={e => setDisplayName(e.target.value)}
                   placeholder="e.g. John Doe"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                  className="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
               </div>
 
@@ -154,7 +154,7 @@ export default function OnboardingPage() {
                   value={username}
                   onChange={e => setUsername(e.target.value.toLowerCase().replace(/[^a-z0-9_]/g, ''))}
                   placeholder="e.g. johndoe99"
-                  className="w-full px-4 py-3 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
+                  className="w-full px-4 py-3 rounded-2xl border border-gray-300 focus:ring-2 focus:ring-primary focus:border-transparent outline-none"
                 />
                 <p className="text-xs text-brand-text-secondary mt-1">Letters, numbers, and underscores only.</p>
               </div>
@@ -193,11 +193,11 @@ export default function OnboardingPage() {
                   onChange={e => setCustomSubjectName(e.target.value)}
                   onKeyDown={e => e.key === 'Enter' && addCustomSubject()}
                   placeholder="Add custom subject..."
-                  className="flex-1 px-4 py-2.5 rounded-xl border border-gray-300 focus:ring-2 focus:ring-primary outline-none"
+                  className="flex-1 px-4 py-2.5 rounded-2xl border border-gray-300 focus:ring-2 focus:ring-primary outline-none"
                 />
                 <button 
                   onClick={addCustomSubject}
-                  className="bg-gray-100 hover:bg-gray-200 px-4 rounded-xl transition-colors font-medium text-brand-text-primary"
+                  className="bg-gray-100 hover:bg-gray-200 px-4 rounded-2xl transition-colors font-medium text-brand-text-primary"
                 >
                   Add
                 </button>
@@ -263,7 +263,7 @@ export default function OnboardingPage() {
         <div className="absolute bottom-8 left-8 right-8 flex justify-between">
           <button
             onClick={() => setStep(step - 1)}
-            className={`px-6 py-2.5 rounded-xl font-medium ${step === 1 ? 'invisible' : 'text-brand-text-secondary hover:bg-gray-100'}`}
+            className={`px-5 py-2.5 rounded-2xl font-medium ${step === 1 ? 'invisible' : 'text-brand-text-secondary hover:bg-gray-100'}`}
           >
             Back
           </button>
@@ -271,7 +271,7 @@ export default function OnboardingPage() {
           <button
             onClick={handleNext}
             disabled={loading}
-            className="flex items-center gap-2 bg-primary text-white px-8 py-2.5 rounded-xl font-semibold hover:bg-primary/90 transition-all shadow-md shadow-primary/20 disabled:opacity-50"
+            className="flex items-center gap-2 bg-primary text-white px-8 py-2.5 rounded-2xl font-semibold hover:bg-primary/90 transition-all shadow-md shadow-primary/20 disabled:opacity-50"
           >
             {loading && <Loader2 className="w-4 h-4 animate-spin" />}
             {step === 3 ? 'Get Started' : 'Next'}

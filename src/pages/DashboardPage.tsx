@@ -10,17 +10,19 @@ import HeatmapCalendar from '@/components/HeatmapCalendar';
 import LoadingSpinner from '@/components/LoadingSpinner';
 import AdBanner from '@/components/AdBanner';
 import { motion } from 'framer-motion';
-import { Flame, Clock, Zap, Target, Play, ChevronRight, Calendar as CalendarIcon, ListChecks, ArrowRight, BookOpen, Plus, BrainCircuit, FileText } from 'lucide-react';
+import { Flame, Clock, Zap, Target, Play, ChevronRight, Calendar as CalendarIcon, ListChecks, ArrowRight, BookOpen, BrainCircuit, FileText } from 'lucide-react';
 import { Link, useNavigate } from 'react-router-dom';
 import SubjectBadge from '@/components/SubjectBadge';
 import { differenceInDays, startOfDay, isFuture, formatDistanceToNow } from 'date-fns';
 import ToolsSection from '@/components/ToolsSection';
+import { useTranslation } from 'react-i18next';
 
 export default function DashboardPage() {
   const { user } = useAuthContext();
   const { getTodaySessions, getSessionsByDateRange } = useSession();
   const { subjects, loading: subjectsLoading } = useSubjects();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   
   const [userData, setUserData] = useState<User | null>(null);
   const [todaySessions, setTodaySessions] = useState<Session[]>([]);
@@ -120,7 +122,7 @@ export default function DashboardPage() {
             transition={{ delay: 0.1, duration: 0.4 }}
             className="text-4xl font-black tracking-tight text-brand-text-primary drop-shadow-sm mb-1"
           >
-            Good {new Date().getHours() < 12 ? 'morning' : 'afternoon'}, {userData.display_name.split(' ')[0]}
+            {t('dashboard.welcome', 'Welcome back')}, {userData.display_name.split(' ')[0]}
           </motion.h1>
           <motion.p 
             initial={{ opacity: 0 }}
@@ -128,7 +130,7 @@ export default function DashboardPage() {
             transition={{ delay: 0.3 }}
             className="text-brand-text-secondary text-lg font-medium"
           >
-            Ready for another focused session?
+            {t('dashboard.ready', 'Ready for another focused session?')}
           </motion.p>
           
           {userData.daily_goal_hrs && userData.daily_goal_hrs > 0 && (
@@ -168,7 +170,7 @@ export default function DashboardPage() {
 
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <button onClick={() => navigate('/planner')} className="flex items-center gap-3 p-4 bg-brand-surface border border-brand-border rounded-2xl hover:border-primary hover:shadow-md transition-all text-left group">
-          <div className="w-10 h-10 rounded-xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
+          <div className="w-10 h-10 rounded-2xl bg-primary/10 flex items-center justify-center text-primary group-hover:bg-primary group-hover:text-white transition-colors">
             <CalendarIcon className="w-5 h-5" />
           </div>
           <div>
@@ -177,7 +179,7 @@ export default function DashboardPage() {
           </div>
         </button>
         <button onClick={() => navigate('/notes')} className="flex items-center gap-3 p-4 bg-brand-surface border border-brand-border rounded-2xl hover:border-info hover:shadow-md transition-all text-left group">
-          <div className="w-10 h-10 rounded-xl bg-info/10 flex items-center justify-center text-info group-hover:bg-info group-hover:text-white transition-colors">
+          <div className="w-10 h-10 rounded-2xl bg-info/10 flex items-center justify-center text-info group-hover:bg-info group-hover:text-white transition-colors">
             <FileText className="w-5 h-5" />
           </div>
           <div>
@@ -186,7 +188,7 @@ export default function DashboardPage() {
           </div>
         </button>
         <button onClick={() => navigate('/flashcards')} className="flex items-center gap-3 p-4 bg-brand-surface border border-brand-border rounded-2xl hover:border-warning hover:shadow-md transition-all text-left group">
-          <div className="w-10 h-10 rounded-xl bg-warning/10 flex items-center justify-center text-warning-foreground group-hover:bg-warning group-hover:text-white transition-colors">
+          <div className="w-10 h-10 rounded-2xl bg-warning/10 flex items-center justify-center text-warning-foreground group-hover:bg-warning group-hover:text-white transition-colors">
             <BrainCircuit className="w-5 h-5" />
           </div>
           <div>
@@ -195,7 +197,7 @@ export default function DashboardPage() {
           </div>
         </button>
         <button onClick={() => navigate('/syllabus')} className="flex items-center gap-3 p-4 bg-brand-surface border border-brand-border rounded-2xl hover:border-success hover:shadow-md transition-all text-left group">
-          <div className="w-10 h-10 rounded-xl bg-success/10 flex items-center justify-center text-success group-hover:bg-success group-hover:text-white transition-colors">
+          <div className="w-10 h-10 rounded-2xl bg-success/10 flex items-center justify-center text-success group-hover:bg-success group-hover:text-white transition-colors">
             <ListChecks className="w-5 h-5" />
           </div>
           <div>
@@ -222,16 +224,16 @@ export default function DashboardPage() {
         initial={{ opacity: 0, y: 20 }}
         animate={{ opacity: 1, y: 0 }}
         transition={{ delay: 0.5 }}
-        className="bg-brand-surface shadow-sm hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-[2.5rem] border border-brand-border"
+        className="bg-brand-surface shadow hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-2xl border border-brand-border"
       >
         <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
           <div className="flex items-center gap-3">
-            <h2 className="text-2xl font-extrabold text-brand-text-primary mb-0 tracking-tight">Your Subjects</h2>
+            <h2 className="text-2xl font-extrabold text-brand-text-primary mb-0 tracking-tight">{t('dashboard.activeSubjects', 'Your Subjects')}</h2>
             <div className="bg-brand-bg border border-brand-border px-3 py-1 rounded-full text-sm font-bold text-brand-text-secondary shadow-inner flex items-center justify-center shadow-sm">
               {subjects.length}
             </div>
           </div>
-          <Link to="/syllabus" className="text-sm font-bold text-primary hover:text-primary/80 transition-colors flex items-center bg-primary/5 px-4 py-2 rounded-xl shadow-sm border border-primary/10">
+          <Link to="/syllabus" className="text-sm font-bold text-primary hover:text-primary/80 transition-colors flex items-center bg-primary/5 px-5 py-2.5 rounded-2xl shadow-sm border border-primary/10">
             View All <ChevronRight className="w-4 h-4 ml-1" />
           </Link>
         </div>
@@ -249,7 +251,7 @@ export default function DashboardPage() {
                   initial={{ opacity: 0, scale: 0.95 }}
                   animate={{ opacity: 1, scale: 1 }}
                   transition={{ delay: 0.5 + (idx * 0.1) }}
-                  className="p-6 rounded-[2rem] border border-brand-border bg-brand-bg flex flex-col h-full group hover:border-brand-border hover:bg-brand-surface hover:shadow-lg transition-all relative overflow-hidden"
+                  className="p-6 rounded-2xl border border-brand-border bg-brand-bg flex flex-col h-full group hover:border-brand-border hover:bg-brand-surface hover:shadow-lg transition-all relative overflow-hidden"
                 >
                   {/* Top section: Icon and badges */}
                   <div className="flex justify-between items-start mb-6">
@@ -278,7 +280,7 @@ export default function DashboardPage() {
                     {subject.name}
                   </h3>
                   
-                  <div className="flex items-center gap-1.5 bg-brand-surface border border-brand-border shadow-sm px-3 py-1.5 rounded-xl w-fit mb-8 opacity-80">
+                  <div className="flex items-center gap-1.5 bg-brand-surface border border-brand-border shadow-sm px-3 py-1.5 rounded-2xl w-fit mb-8 opacity-80">
                     <BookOpen className="w-4 h-4 text-brand-text-secondary" />
                     <span className="text-sm font-bold text-brand-text-secondary">{subject.syllabus?.length || 0}</span>
                   </div>
@@ -312,7 +314,7 @@ export default function DashboardPage() {
             );
           })}
           {subjects.length === 0 && (
-            <div className="text-center py-10 sm:col-span-2 lg:col-span-3 xl:col-span-4 text-brand-text-secondary border-2 border-dashed border-brand-border rounded-3xl font-medium">
+            <div className="text-center py-10 sm:col-span-2 lg:col-span-3 xl:col-span-4 text-brand-text-secondary border-2 border-dashed border-brand-border rounded-2xl font-medium">
               No subjects added yet. Go to Profile to set them up.
             </div>
           )}
@@ -325,10 +327,10 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.3 }}
-            className="bg-brand-surface shadow-sm hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-[2.5rem] border border-brand-border"
+            className="bg-brand-surface shadow hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-2xl border border-brand-border"
           >
             <h2 className="text-2xl font-bold mb-8 flex items-center gap-3 text-brand-text-primary group">
-              <div className="p-2.5 bg-primary/10 rounded-xl text-primary transition-transform group-hover:scale-110">
+              <div className="p-2.5 bg-primary/10 rounded-2xl text-primary transition-transform group-hover:scale-110">
                 <CalendarIcon className="w-6 h-6" />
               </div>
               Year in Pixels
@@ -342,11 +344,11 @@ export default function DashboardPage() {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.4 }}
-            className="bg-brand-surface shadow-sm hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-[2.5rem] border border-brand-border"
+            className="bg-brand-surface shadow hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-2xl border border-brand-border"
           >
             <div className="flex justify-between items-center mb-8">
               <h2 className="text-2xl font-bold text-brand-text-primary">Subject Progress</h2>
-              <Link to="/profile" className="text-sm font-bold text-primary hover:text-primary/80 transition-colors flex items-center bg-primary/5 px-4 py-2 rounded-xl">
+              <Link to="/profile" className="text-sm font-bold text-primary hover:text-primary/80 transition-colors flex items-center bg-primary/5 px-5 py-2.5 rounded-2xl">
                 Manage Goals <ChevronRight className="w-4 h-4 ml-1" />
               </Link>
             </div>
@@ -384,7 +386,7 @@ export default function DashboardPage() {
                 );
               })}
               {subjects.length === 0 && (
-                <div className="text-center py-6 text-brand-text-secondary border-2 border-dashed border-brand-border rounded-xl">
+                <div className="text-center py-6 text-brand-text-secondary border-2 border-dashed border-brand-border rounded-2xl">
                   No subjects added yet. Go to Profile to set them up.
                 </div>
               )}
@@ -397,7 +399,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, scale: 0.95 }}
             animate={{ opacity: 1, scale: 1 }}
             transition={{ delay: 0.4, type: 'spring' }}
-            className="bg-primary shadow-xl shadow-primary/10 hover:shadow-primary/20 transition-all duration-300 p-8 md:p-10 rounded-[2.5rem] relative overflow-hidden group"
+            className="bg-primary shadow-xl shadow-primary/10 hover:shadow-primary/20 transition-all duration-300 p-8 md:p-10 rounded-2xl relative overflow-hidden group"
           >
              <div className="absolute top-0 right-0 p-8 opacity-[0.08] transform group-hover:scale-110 group-hover:rotate-12 transition-transform duration-700">
                <Flame className="w-40 h-40 text-black dark:text-white" />
@@ -419,9 +421,9 @@ export default function DashboardPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.5 }}
-            className="bg-brand-surface shadow-sm hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-[2.5rem] border border-brand-border"
+            className="bg-brand-surface shadow hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-2xl border border-brand-border"
           >
-            <h2 className="text-2xl font-bold mb-6 text-brand-text-primary">Upcoming Exams</h2>
+            <h2 className="text-2xl font-bold mb-6 text-brand-text-primary">{t('dashboard.upcomingExams', 'Upcoming Exams')}</h2>
             {upcomingExams.length > 0 ? (
               <div className="space-y-4">
                 {upcomingExams.map((exam, i) => {
@@ -440,7 +442,7 @@ export default function DashboardPage() {
                         <div className="font-extrabold text-base mb-1.5 text-brand-text-primary">{exam.examName}</div>
                         <SubjectBadge name={exam.subjectName} color={exam.subjectColor} />
                       </div>
-                      <div className={`px-4 py-2.5 rounded-xl border flex flex-col items-center justify-center min-w-[70px] ${urgencyColor}`}>
+                      <div className={`px-4 py-2.5 rounded-2xl border flex flex-col items-center justify-center min-w-[70px] ${urgencyColor}`}>
                         <div className="text-xl font-black leading-none mb-0.5">{daysLeft}</div>
                         <div className="text-[9px] font-bold uppercase tracking-widest opacity-80">Days</div>
                       </div>
@@ -450,7 +452,7 @@ export default function DashboardPage() {
               </div>
             ) : (
                <div className="text-center py-8 text-brand-text-secondary text-sm">
-                 No upcoming exams scheduled.<br/>Add them in your Profile.
+                 {t('dashboard.noExams', 'No upcoming exams.')}<br/>{t('dashboard.addExamsMsg', 'Add them in your Profile.')}
                </div>
             )}
           </motion.section>
@@ -459,7 +461,7 @@ export default function DashboardPage() {
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.6 }}
-            className="bg-brand-surface shadow-sm hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-[2.5rem] border border-brand-border"
+            className="bg-brand-surface shadow hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-2xl border border-brand-border"
           >
             <h2 className="text-2xl font-bold mb-6 text-brand-text-primary">Upcoming Reminders</h2>
             {upcomingReminders.length > 0 ? (
@@ -480,7 +482,7 @@ export default function DashboardPage() {
                         <div className="font-extrabold text-base mb-1.5 text-brand-text-primary">{reminder.examName}</div>
                         <SubjectBadge name={reminder.subjectName} color={reminder.subjectColor} />
                       </div>
-                      <div className={`px-4 py-2.5 rounded-xl border flex flex-col items-center justify-center min-w-[70px] ${urgencyColor}`}>
+                      <div className={`px-4 py-2.5 rounded-2xl border flex flex-col items-center justify-center min-w-[70px] ${urgencyColor}`}>
                         <div className="text-xl font-black leading-none mb-0.5">{daysLeft}</div>
                         <div className="text-[9px] font-bold uppercase tracking-widest opacity-80">Days</div>
                       </div>

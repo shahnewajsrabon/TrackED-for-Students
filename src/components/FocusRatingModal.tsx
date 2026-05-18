@@ -31,7 +31,7 @@ export default function FocusRatingModal({ isOpen, onSave }: Props) {
       <motion.div 
         initial={{ scale: 0.95, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-brand-surface rounded-3xl p-8 max-w-md w-full shadow-2xl relative"
+        className="bg-brand-surface rounded-2xl p-8 max-w-md w-full shadow-2xl relative"
       >
         <h2 className="text-2xl font-bold mb-2 text-center">Session Complete!</h2>
         <p className="text-brand-text-secondary text-center mb-8 text-sm">How was your focus?</p>
@@ -62,7 +62,7 @@ export default function FocusRatingModal({ isOpen, onSave }: Props) {
                   key={m.label}
                   type="button"
                   onClick={() => setMood(m.label)}
-                  className={`flex flex-col items-center p-3 rounded-xl border flex-1 transition-colors ${mood === m.label ? 'bg-primary-light border-primary' : 'bg-gray-50 border-transparent hover:bg-gray-100'}`}
+                  className={`flex flex-col items-center p-3 rounded-2xl border flex-1 transition-colors ${mood === m.label ? 'bg-primary-light border-primary' : 'bg-gray-50 border-transparent hover:bg-gray-100'}`}
                 >
                   <span className="text-2xl mb-1">{m.emoji}</span>
                   <span className="text-xs font-medium">{m.label}</span>
@@ -78,13 +78,13 @@ export default function FocusRatingModal({ isOpen, onSave }: Props) {
               value={note}
               onChange={(e) => setNote(e.target.value)}
               placeholder="What did you work on?"
-              className="w-full bg-gray-50 border border-brand-border rounded-xl p-3 text-sm min-h-[80px] focus:ring-2 focus:ring-primary focus:outline-none resize-none"
+              className="w-full bg-gray-50 border border-brand-border rounded-2xl p-3 text-sm min-h-[80px] focus:ring-2 focus:ring-primary focus:outline-none resize-none"
             />
           </div>
 
           <button 
             type="submit"
-            className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 rounded-xl transition-all"
+            className="w-full bg-primary hover:bg-primary/90 text-white font-semibold py-3.5 rounded-2xl transition-all"
           >
             Save & Continue
           </button>

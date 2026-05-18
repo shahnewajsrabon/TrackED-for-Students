@@ -71,7 +71,7 @@ export default function AIInsights({ stats, sessions }: AIInsightsProps) {
 
   if (!hasGenerated && !loading) {
     return (
-      <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 p-6 rounded-3xl flex flex-col items-center justify-center text-center">
+      <div className="bg-gradient-to-br from-indigo-50 to-purple-50 border border-indigo-100 p-6 rounded-2xl flex flex-col items-center justify-center text-center">
         <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center shadow-sm mb-4">
           <BrainCircuit className="w-6 h-6 text-indigo-600" />
         </div>
@@ -81,7 +81,7 @@ export default function AIInsights({ stats, sessions }: AIInsightsProps) {
         </p>
         <button 
           onClick={generateInsights}
-          className="bg-indigo-600 text-white px-6 py-2.5 rounded-full text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm flex items-center gap-2"
+          className="bg-indigo-600 text-white px-5 py-2.5 rounded-full text-sm font-semibold hover:bg-indigo-700 transition-colors shadow-sm flex items-center gap-2"
         >
           <Sparkles className="w-4 h-4" />
           Generate Insights
@@ -94,16 +94,16 @@ export default function AIInsights({ stats, sessions }: AIInsightsProps) {
     <div className="grid md:grid-cols-2 gap-6 relative">
       {/* Loading Overlay */}
       {loading && (
-        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 rounded-3xl flex flex-col items-center justify-center border border-indigo-100">
+        <div className="absolute inset-0 bg-white/80 backdrop-blur-sm z-10 rounded-2xl flex flex-col items-center justify-center border border-indigo-100">
           <Loader2 className="w-8 h-8 text-indigo-600 animate-spin mb-4" />
           <p className="text-sm font-medium text-indigo-900 animate-pulse">Analyzing your study patterns...</p>
         </div>
       )}
 
-      <div className="bg-white p-6 rounded-3xl border border-brand-border shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+      <div className="bg-white p-6 rounded-2xl border border-brand-border shadow hover:shadow-md transition-shadow relative overflow-hidden">
         <div className="absolute top-0 right-0 w-32 h-32 bg-purple-500/5 rounded-bl-[100px] -z-0" />
         <div className="flex items-center gap-3 mb-4 relative z-10">
-          <div className="p-2 bg-purple-100 text-purple-700 rounded-xl">
+          <div className="p-2 bg-purple-100 text-purple-700 rounded-2xl">
             <Sparkles className="w-5 h-5" />
           </div>
           <h3 className="font-bold text-lg text-gray-900">Weekly Insights</h3>
@@ -113,10 +113,10 @@ export default function AIInsights({ stats, sessions }: AIInsightsProps) {
         </div>
       </div>
 
-      <div className="bg-white p-6 rounded-3xl border border-brand-border shadow-sm hover:shadow-md transition-shadow relative overflow-hidden">
+      <div className="bg-white p-6 rounded-2xl border border-brand-border shadow hover:shadow-md transition-shadow relative overflow-hidden">
          <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-bl-[100px] -z-0" />
         <div className="flex items-center gap-3 mb-4 relative z-10">
-          <div className="p-2 bg-emerald-100 text-emerald-700 rounded-xl">
+          <div className="p-2 bg-emerald-100 text-emerald-700 rounded-2xl">
             <CalendarClock className="w-5 h-5" />
           </div>
           <h3 className="font-bold text-lg text-gray-900">Smart Scheduling</h3>
