@@ -53,5 +53,25 @@ service cloud.firestore {
        allow update: if isSignedIn() && existing().user_id == request.auth.uid;
        allow delete: if isSignedIn() && existing().user_id == request.auth.uid;
     }
+
+    match /exams/{examId} {
+       allow read: if isSignedIn();
+       allow create: if isSignedIn() && incoming().creator_id == request.auth.uid;
+       allow update: if isSignedIn();
+       allow delete: if isSignedIn() && existing().creator_id == request.auth.uid;
+    }
+
+    match /exam_participants/{participantId} {
+       allow read: if isSignedIn();
+       allow create: if isSignedIn() && incoming().user_id == request.auth.uid;
+       allow update: if isSignedIn() && existing().user_id == request.auth.uid;
+       allow delete: if isSignedIn() && existing().user_id == request.auth.uid;
+    }
+    
+    match /exam_keys/{keyId} {
+       allow read: if false; // Accessed securely via Admin SDK on the backend
+       allow create: if isSignedIn() && incoming().creator_id == request.auth.uid;
+       allow update, delete: if isSignedIn() && existing().creator_id == request.auth.uid;
+    }
   }
 }
