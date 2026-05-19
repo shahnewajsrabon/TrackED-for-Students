@@ -203,7 +203,28 @@
   .markdown-body strong {
     @apply font-bold;
   }
-  .markdown-body a {
-    @apply text-primary hover:underline;
+  .markdown-body-chat {
+    @apply leading-relaxed break-words;
+  }
+  .markdown-body-chat p {
+    @apply m-0;
+  }
+  .markdown-body-chat code {
+    @apply bg-black/10 px-1 py-0.5 rounded text-xs font-mono;
+  }
+  .markdown-body-chat pre {
+    @apply bg-black/10 p-2 rounded-lg my-1 overflow-x-auto;
+  }
+  .markdown-body-chat pre code {
+    @apply bg-transparent p-0;
+  }
+  .markdown-body-chat strong {
+    @apply font-bold;
+  }
+  .markdown-body-chat em {
+    @apply italic;
+  }
+  .markdown-body-chat a {
+    @apply underline hover:opacity-80;
   }
 }

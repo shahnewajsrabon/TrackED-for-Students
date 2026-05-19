@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { FileQuestion, Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
 import { db } from '@/lib/firebase';
-import { collection, query, where, onSnapshot, orderBy } from 'firebase/firestore';
+import { collection, query, where, onSnapshot, orderBy, deleteDoc, doc } from 'firebase/firestore';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 import ExamTakingSession from '@/components/exams/ExamTakingSession';
@@ -43,6 +43,15 @@ export default function ExamsPage() {
 
   const startExam = (exam: any) => {
     setTakingExam(exam);
+  };
+
+  const deleteExam = async (examId: string) => {
+    if (!confirm('Are you sure you want to delete this exam?')) return;
+    try {
+      await deleteDoc(doc(db, 'exams', examId));
+    } catch (error) {
+      console.error("Error deleting exam:", error);
+    }
   };
 
   if (loading) return <LoadingSpinner />;
@@ -120,6 +129,7 @@ export default function ExamsPage() {
               pastExams={pastExams} 
               user={user} 
               startExam={startExam} 
+              deleteExam={deleteExam}
             />
           </div>
         </div>

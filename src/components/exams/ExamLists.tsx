@@ -1,5 +1,5 @@
 import React from 'react';
-import { Target, Clock, Play, Flame, Users, Share2, FileQuestion, Trophy, BarChart2 } from 'lucide-react';
+import { Target, Clock, Play, Flame, Users, Share2, FileQuestion, Trophy, BarChart2, Trash2 } from 'lucide-react';
 
 interface ExamListsProps {
   activeTab: 'available' | 'created' | 'past';
@@ -7,9 +7,10 @@ interface ExamListsProps {
   pastExams: any[];
   user: any;
   startExam: (exam: any) => void;
+  deleteExam: (examId: string) => void;
 }
 
-export default function ExamLists({ activeTab, exams, pastExams, user, startExam }: ExamListsProps) {
+export default function ExamLists({ activeTab, exams, pastExams, user, startExam, deleteExam }: ExamListsProps) {
   if (activeTab === 'available') {
     return (
       <div className="flex flex-col h-full">
@@ -81,11 +82,17 @@ export default function ExamLists({ activeTab, exams, pastExams, user, startExam
                   </div>
                 </div>
                 <div className="flex items-center gap-2 w-full md:w-auto">
-                   <button className="flex-1 md:flex-none border border-brand-border bg-brand-surface text-brand-text-primary px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-50 flex items-center justify-center gap-2 transition-all">
+                   <button onClick={() => {
+                     navigator.clipboard.writeText(`Join my exam: ${exam.title} (ID: ${exam.id})`);
+                     alert('Exam details copied to clipboard!');
+                   }} className="flex-1 md:flex-none border border-brand-border bg-brand-surface text-brand-text-primary px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-50 flex items-center justify-center gap-2 transition-all">
                      <Share2 className="w-4 h-4" /> Share
                    </button>
-                   <button className="flex-1 md:flex-none bg-brand-surface text-brand-text-primary border border-brand-border px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-50 flex items-center justify-center gap-2 transition-all">
+                   <button onClick={() => alert("Edit functionality coming soon")} className="flex-1 md:flex-none bg-brand-surface text-brand-text-primary border border-brand-border px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-50 flex items-center justify-center gap-2 transition-all">
                      Edit
+                   </button>
+                   <button onClick={() => deleteExam(exam.id)} className="flex-1 md:flex-none bg-danger/10 text-danger border border-danger/20 px-4 py-2 rounded-xl font-bold text-sm hover:bg-danger hover:text-white transition-all flex items-center justify-center gap-2">
+                     <Trash2 className="w-4 h-4" /> Delete
                    </button>
                 </div>
               </div>
@@ -135,11 +142,11 @@ export default function ExamLists({ activeTab, exams, pastExams, user, startExam
                      <span className="text-[10px] font-bold text-brand-text-secondary uppercase tracking-widest">Rank</span>
                      <span className="font-black text-lg text-brand-text-primary">{exam.rank}</span>
                    </div>
-                   <button className="hidden md:flex ml-2 border border-brand-border bg-brand-surface text-brand-text-primary px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-50 items-center gap-2 transition-all">
+                   <button onClick={() => alert("Detailed analytics coming soon")} className="hidden md:flex ml-2 border border-brand-border bg-brand-surface text-brand-text-primary px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-50 items-center gap-2 transition-all">
                      Details
                    </button>
                 </div>
-                <button className="md:hidden w-full mt-2 border border-brand-border bg-brand-surface text-brand-text-primary px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-50 flex items-center justify-center gap-2 transition-all">
+                <button onClick={() => alert("Detailed analytics coming soon")} className="md:hidden w-full mt-2 border border-brand-border bg-brand-surface text-brand-text-primary px-4 py-2 rounded-xl font-bold text-sm hover:bg-gray-50 flex items-center justify-center gap-2 transition-all">
                   View Analytics
                 </button>
               </div>
