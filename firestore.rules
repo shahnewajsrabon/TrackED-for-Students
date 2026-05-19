@@ -34,21 +34,21 @@ service cloud.firestore {
     }
 
     match /tasks/{taskId} {
-       allow read: if isSignedIn() && existing().user_id == request.auth.uid;
+       allow read: if isSignedIn() && resource.data.user_id == request.auth.uid;
        allow create: if isSignedIn() && incoming().user_id == request.auth.uid;
        allow update: if isSignedIn() && existing().user_id == request.auth.uid;
        allow delete: if isSignedIn() && existing().user_id == request.auth.uid;
     }
 
     match /notes/{noteId} {
-       allow read: if isSignedIn() && existing().user_id == request.auth.uid;
+       allow read: if isSignedIn() && resource.data.user_id == request.auth.uid;
        allow create: if isSignedIn() && incoming().user_id == request.auth.uid;
        allow update: if isSignedIn() && existing().user_id == request.auth.uid;
        allow delete: if isSignedIn() && existing().user_id == request.auth.uid;
     }
 
     match /decks/{deckId} {
-       allow read: if isSignedIn() && existing().user_id == request.auth.uid;
+       allow read: if isSignedIn() && resource.data.user_id == request.auth.uid;
        allow create: if isSignedIn() && incoming().user_id == request.auth.uid;
        allow update: if isSignedIn() && existing().user_id == request.auth.uid;
        allow delete: if isSignedIn() && existing().user_id == request.auth.uid;
