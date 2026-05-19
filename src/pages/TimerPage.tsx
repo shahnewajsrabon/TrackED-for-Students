@@ -13,6 +13,10 @@ import clsx from 'clsx';
 import { format } from 'date-fns';
 import { ambientAudio } from '@/lib/audio';
 import confetti from 'canvas-confetti';
+import { db } from '@/lib/firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { useAuthContext } from '@/context/AuthContext';
+
 
 const DEFAULT_TIMER_STATE: TimerState = {
   subjectId: null,
@@ -25,7 +29,8 @@ const DEFAULT_TIMER_STATE: TimerState = {
   volume: 50,
   timerType: 'Pomodoro',
   ambientSound: 'None',
-  ambientVolume: 30
+  ambientVolume: 30,
+  strictMode: false
 };
 
 const playAlertSound = (type: string, volume: number) => {
@@ -81,9 +86,22 @@ const playAlertSound = (type: string, volume: number) => {
 };
 
 export default function TimerPage() {
+  const { user } = useAuthContext();
   const { subjects, loading: subjectsLoading } = useSubjects();
   const { saveSession, getTodaySessions } = useSession();
   
+  const [tasks, setTasks] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (!user) return;
+    const fetchTasks = async () => {
+      const q = query(collection(db, 'tasks'), where('user_id', '==', user.uid), where('is_completed', '==', false));
+      const snap = await getDocs(q);
+      setTasks(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    };
+    fetchTasks();
+  }, [user]);
+
   const [config, setConfig] = useState<TimerState>(() => {
     const saved = localStorage.getItem('trackEd_timerState');
     return saved ? JSON.parse(saved) : DEFAULT_TIMER_STATE;
@@ -162,6 +180,19 @@ export default function TimerPage() {
   useEffect(() => {
     localStorage.setItem('trackEd_timerState', JSON.stringify(config));
   }, [config]);
+
+  useEffect(() => {
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === 'hidden' && config.strictMode && isActive && mode === 'Focus') {
+        setIsActive(false);
+        setEndTime(null);
+        alert('STRICT MODE WARNING: You left the tab! The timer has been paused. Keep your focus!');
+      }
+    };
+    
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
+  }, [config.strictMode, isActive, mode]);
 
   useEffect(() => {
     let worker: Worker | null = null;
@@ -249,7 +280,8 @@ export default function TimerPage() {
       mood: mood,
       note: note,
       started_at: (sessionStartTime || new Date(Date.now() - actualDurationMins * 60000)).toISOString(),
-      completed_at: completedAt.toISOString()
+      completed_at: completedAt.toISOString(),
+      linked_task_id: config.linkedTaskId || null
     });
 
     const newSessions = await getTodaySessions();
@@ -475,6 +507,7 @@ export default function TimerPage() {
           config={config} 
           setConfig={setConfig} 
           subjects={subjects} 
+          tasks={tasks}
           mode={mode} 
           isActive={isActive} 
           sessionCount={sessionCount} 

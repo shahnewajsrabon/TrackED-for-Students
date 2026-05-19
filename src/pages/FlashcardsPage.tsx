@@ -20,6 +20,7 @@ export default function FlashcardsPage() {
   const [newDeckSubject, setNewDeckSubject] = useState('');
 
   const [activeDeck, setActiveDeck] = useState<Deck | null>(null);
+  const [studyDeck, setStudyDeck] = useState<Deck | null>(null);
   const [newCardQ, setNewCardQ] = useState('');
   const [newCardA, setNewCardA] = useState('');
   
@@ -134,17 +135,73 @@ export default function FlashcardsPage() {
     await updateDoc(doc(db, 'decks', activeDeck.id), { cards: newCards });
   };
 
+  const handleRateCard = async (cardId: string, rating: number) => {
+    if (!user || !activeDeck) return;
+    const cards = activeDeck.cards || [];
+    const cardIndex = cards.findIndex(c => c.id === cardId);
+    if (cardIndex === -1) return;
+    
+    const card = cards[cardIndex];
+    let easeFactor = card.ease_factor ?? 2.5;
+    let interval = card.interval ?? 0;
+    
+    if (rating === 1) { // Hard / Again
+      interval = 1;
+      easeFactor = Math.max(1.3, easeFactor - 0.2);
+    } else if (rating === 2) { // Good
+      interval = (interval === 0) ? 1 : (interval === 1 ? 6 : Math.round(interval * easeFactor));
+    } else if (rating === 3) { // Easy
+      interval = (interval === 0) ? 4 : (interval === 1 ? 6 : Math.round(interval * easeFactor * 1.3));
+      easeFactor += 0.15;
+    }
+    
+    const nextReview = new Date();
+    nextReview.setDate(nextReview.getDate() + interval);
+    
+    const newCards = [...cards];
+    newCards[cardIndex] = {
+      ...card,
+      interval,
+      ease_factor: easeFactor,
+      next_review_date: nextReview.toISOString(),
+      review_count: (card.review_count || 0) + 1
+    };
+    
+    await updateDoc(doc(db, 'decks', activeDeck.id), { cards: newCards });
+  };
+
+  const startStudySession = (isDueOnly: boolean) => {
+    if (!activeDeck || !activeDeck.cards) return;
+    
+    let cardsToStudy = activeDeck.cards;
+    if (isDueOnly) {
+      const now = new Date();
+      cardsToStudy = activeDeck.cards.filter(c => !c.next_review_date || new Date(c.next_review_date) <= now);
+    }
+    
+    if (cardsToStudy.length === 0) {
+      alert("No cards due for review right now!");
+      return;
+    }
+
+    setStudyDeck({ ...activeDeck, cards: cardsToStudy });
+    setStudyInd(0);
+    setShowAnswer(false);
+    setStudyMode(true);
+  };
+
   if (loading) return <LoadingSpinner />;
 
-  if (studyMode && activeDeck) {
+  if (studyMode && studyDeck) {
     return (
       <StudyModeDisplay
-        activeDeck={activeDeck}
+        activeDeck={studyDeck}
         studyInd={studyInd}
         showAnswer={showAnswer}
         setShowAnswer={setShowAnswer}
         setStudyMode={setStudyMode}
         setStudyInd={setStudyInd}
+        onRateCard={handleRateCard}
       />
     );
   }
@@ -233,19 +290,26 @@ export default function FlashcardsPage() {
                   <h2 className="text-3xl font-black text-brand-text-primary">{activeDeck.title}</h2>
                   <p className="text-brand-text-secondary font-bold mt-2 uppercase tracking-widest text-xs bg-brand-bg inline-block px-3 py-1 rounded-md border border-brand-border">{activeDeck.cards?.length || 0} cards total</p>
                 </div>
-                <motion.button 
-                  whileHover={{ scale: 1.02, y: -2 }}
-                  whileTap={{ scale: 0.98 }}
-                  onClick={() => {
-                    setStudyInd(0);
-                    setShowAnswer(false);
-                    setStudyMode(true);
-                  }}
-                  disabled={!activeDeck.cards || activeDeck.cards.length === 0}
-                  className="bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
-                >
-                  <Play className="w-5 h-5 fill-current" /> Study Now
-                </motion.button>
+                <div className="flex items-center gap-3">
+                  <motion.button 
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => startStudySession(true)}
+                    disabled={!activeDeck.cards || activeDeck.cards.length === 0}
+                    className="bg-primary text-white px-6 py-4 rounded-2xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
+                  >
+                    <Play className="w-5 h-5 fill-current" /> Study Due
+                  </motion.button>
+                  <motion.button 
+                    whileHover={{ scale: 1.02, y: -2 }}
+                    whileTap={{ scale: 0.98 }}
+                    onClick={() => startStudySession(false)}
+                    disabled={!activeDeck.cards || activeDeck.cards.length === 0}
+                    className="bg-brand-surface border border-brand-border text-brand-text-primary px-6 py-4 rounded-2xl font-bold hover:bg-gray-50 disabled:opacity-50 transition-all shadow-sm flex items-center justify-center gap-2"
+                  >
+                    Study All
+                  </motion.button>
+                </div>
               </div>
 
               <form onSubmit={addCard} className="bg-primary/5 p-6 rounded-2xl border border-primary/20 space-y-4">

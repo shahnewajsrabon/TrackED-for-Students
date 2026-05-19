@@ -1,3 +1,16 @@
+export interface UserQuest {
+  id: string;
+  title: string;
+  description: string;
+  type: 'daily' | 'weekly';
+  goal: number;
+  progress: number;
+  xp_reward: number;
+  coin_reward: number;
+  is_completed: boolean;
+  expires_at: string;
+}
+
 export interface User {
   id: string;
   username: string;
@@ -15,6 +28,13 @@ export interface User {
   badges: string[];
   created_at: string;
   isOnline?: boolean;
+  coins?: number;
+  streak_freezes?: number;
+  unlocked_themes?: string[];
+  unlocked_sounds?: string[];
+  active_theme?: string;
+  quests?: UserQuest[];
+  claimed_quests?: Record<string, string>;
 }
 
 export interface Session {
@@ -29,6 +49,8 @@ export interface Session {
   xp_earned: number;
   started_at: string;
   completed_at: string;
+  linked_task_id?: string | null;
+  linked_exam_id?: string | null;
 }
 
 export interface Group {
@@ -62,6 +84,7 @@ export interface SyllabusTopic {
   title: string;
   status: 'not_started' | 'in_progress' | 'completed';
   dueDate?: string;
+  chapter?: string;
 }
 
 export interface Subject {
@@ -95,6 +118,8 @@ export interface TimerState {
   timerType: 'Pomodoro' | 'Stopwatch';
   ambientSound: string;
   ambientVolume: number;
+  strictMode: boolean;
+  linkedTaskId?: string | null;
 }
 
 export interface Exam {
@@ -106,6 +131,10 @@ export interface Flashcard {
   id: string;
   q: string;
   a: string;
+  next_review_date?: string;
+  ease_factor?: number;
+  interval?: number;
+  review_count?: number;
 }
 
 export interface Deck {

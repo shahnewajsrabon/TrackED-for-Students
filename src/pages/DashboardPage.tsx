@@ -15,6 +15,7 @@ import { Link, useNavigate } from 'react-router-dom';
 import SubjectGrid from '@/components/dashboard/SubjectGrid';
 import UpcomingExamsPanel from '@/components/dashboard/UpcomingExamsPanel';
 import UpcomingRemindersPanel from '@/components/dashboard/UpcomingRemindersPanel';
+import DailyQuestsPanel from '@/components/dashboard/DailyQuestsPanel';
 import { differenceInDays, startOfDay, isFuture, formatDistanceToNow } from 'date-fns';
 import ToolsSection from '@/components/ToolsSection';
 import { useTranslation } from 'react-i18next';
@@ -242,6 +243,16 @@ export default function DashboardPage() {
               <HeatmapCalendar sessions={allSessions} />
             </div>
           </motion.section>
+
+          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.35 }}>
+             <DailyQuestsPanel 
+               user={user} 
+               userData={userData} 
+               todaySessionsCount={todaySessions.length} 
+               todayHours={todayHours} 
+               setUserData={setUserData} 
+             />
+          </motion.div>
 
           <motion.section 
             initial={{ opacity: 0, y: 20 }}

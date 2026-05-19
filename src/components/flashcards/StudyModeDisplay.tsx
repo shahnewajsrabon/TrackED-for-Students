@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Play } from 'lucide-react';
+import { Play, TrendingUp, TrendingDown, Check } from 'lucide-react';
 import { Flashcard, Deck } from '@/types';
 
 interface StudyModeDisplayProps {
@@ -10,6 +10,7 @@ interface StudyModeDisplayProps {
   setShowAnswer: (v: boolean) => void;
   setStudyMode: (v: boolean) => void;
   setStudyInd: (v: number) => void;
+  onRateCard?: (cardId: string, rating: number) => void;
 }
 
 export default function StudyModeDisplay({
@@ -18,13 +19,20 @@ export default function StudyModeDisplay({
   showAnswer,
   setShowAnswer,
   setStudyMode,
-  setStudyInd
+  setStudyInd,
+  onRateCard
 }: StudyModeDisplayProps) {
   const cards = activeDeck.cards || [];
   if (cards.length === 0) return null;
   
   const currentCard = cards[studyInd];
   const progress = Math.round(((studyInd + 1) / cards.length) * 100);
+
+  const handleRate = (rating: number) => {
+    if (onRateCard) onRateCard(currentCard.id, rating);
+    setShowAnswer(false);
+    setStudyInd((studyInd + 1) % cards.length);
+  };
 
   return (
     <motion.div 
@@ -49,7 +57,7 @@ export default function StudyModeDisplay({
         </div>
       </div>
       
-      <div className="w-full perspective-[1200px] aspect-[5/3] cursor-pointer group" onClick={() => setShowAnswer(!showAnswer)}>
+      <div className="w-full perspective-[1200px] aspect-[5/3] cursor-pointer group" onClick={() => !showAnswer && setShowAnswer(true)}>
         <motion.div
           className="w-full h-full relative"
           style={{ transformStyle: 'preserve-3d' }}
@@ -72,10 +80,10 @@ export default function StudyModeDisplay({
 
           {/* Back */}
           <div 
-            className="absolute inset-0 bg-primary rounded-2xl border border-primary/50 shadow-xl flex flex-col items-center justify-center p-12 backface-hidden text-white"
+            className="absolute inset-0 bg-primary rounded-2xl border border-primary/50 shadow-xl flex flex-col items-center justify-center p-12 backface-hidden text-white overflow-hidden"
             style={{ backfaceVisibility: 'hidden', transform: 'rotateY(180deg)' }}
           >
-            <h3 className="text-3xl md:text-5xl font-extrabold text-center z-10 leading-tight drop-shadow-md">
+            <h3 className="text-3xl md:text-5xl font-extrabold text-center z-10 leading-tight drop-shadow-md overflow-y-auto w-full no-scrollbar px-4 pt-4">
               {currentCard.a}
             </h3>
             <span className="absolute bottom-8 font-black uppercase tracking-[0.2em] text-[10px] text-white/60">
@@ -85,7 +93,7 @@ export default function StudyModeDisplay({
         </motion.div>
       </div>
 
-      <div className="mt-12 flex items-center justify-between w-full max-w-sm">
+      <div className="mt-12 flex items-center justify-between w-full max-w-lg">
         <button 
           onClick={() => {
              setStudyMode(false);
@@ -94,29 +102,33 @@ export default function StudyModeDisplay({
           }} 
           className="px-6 py-3.5 bg-brand-bg border border-brand-border rounded-2xl font-bold hover:bg-gray-100 dark:hover:bg-gray-800 transition-colors text-brand-text-secondary hover:text-brand-text-primary"
         >
-          End Session
+          Quit
         </button>
         
         <AnimatePresence mode="wait">
           {showAnswer ? (
-            <motion.button 
-              initial={{ opacity: 0, scale: 0.9 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.9 }}
-              onClick={() => {
-                setShowAnswer(false);
-                setStudyInd((studyInd + 1) % cards.length);
-              }}
-              className="px-8 py-3.5 bg-brand-text-primary text-brand-bg rounded-2xl font-bold hover:opacity-90 transition-all active:scale-95 shadow-xl flex items-center gap-2"
+            <motion.div 
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: 10 }}
+              className="flex items-center gap-3"
             >
-              Next Card <Play className="w-5 h-5 fill-current" />
-            </motion.button>
+              <button onClick={() => handleRate(1)} className="px-5 py-3.5 bg-danger/10 text-danger border border-danger/20 rounded-2xl font-bold hover:bg-danger hover:text-white transition-all active:scale-95 flex items-center gap-2">
+                <TrendingDown className="w-4 h-4" /> Hard
+              </button>
+              <button onClick={() => handleRate(2)} className="px-5 py-3.5 bg-success/10 text-success border border-success/20 rounded-2xl font-bold hover:bg-success hover:text-white transition-all active:scale-95 flex items-center gap-2">
+                <Check className="w-4 h-4" /> Good
+              </button>
+              <button onClick={() => handleRate(3)} className="px-5 py-3.5 bg-primary/10 text-primary border border-primary/20 rounded-2xl font-bold hover:bg-primary hover:text-white transition-all active:scale-95 flex items-center gap-2">
+                <TrendingUp className="w-4 h-4" /> Easy
+              </button>
+            </motion.div>
           ) : (
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
-              className="text-brand-text-secondary font-medium italic text-sm"
+              className="text-brand-text-secondary font-medium italic text-sm text-center flex-1"
             >
               Tap card to flip
             </motion.div>

@@ -50,6 +50,7 @@ interface SaveSessionParams {
   note: string;
   started_at: string;
   completed_at: string;
+  linked_task_id?: string | null;
 }
 
 const LEVEL_THRESHOLDS = [
@@ -118,15 +119,21 @@ export function useSession() {
       const userRef = doc(db, 'users', user.uid);
       const docSnap = await getDoc(userRef);
 
+      let coinsEarned = 0;
+
       if (docSnap.exists()) {
         const userData = docSnap.data();
         const newXp = (userData.xp || 0) + xp_earned;
         const newLevelObj = LEVEL_THRESHOLDS.slice().reverse().find(t => newXp >= t.min) || LEVEL_THRESHOLDS[0];
         const newLevel = newLevelObj.level;
+        
+        coinsEarned = Math.floor(xp_earned / 2);
+        const newCoins = (userData.coins || 0) + coinsEarned;
 
         await updateDoc(userRef, {
           xp: newXp,
           level: newLevel,
+          coins: newCoins,
         });
 
         if (newLevel !== userData.level) {
@@ -138,7 +145,7 @@ export function useSession() {
 
       await updateStreakAfterSession();
 
-      toast.success(`Session saved! +${xp_earned} XP`);
+      toast.success(`Session saved! +${xp_earned} XP, +${coinsEarned} Coins`);
       ambientAudio.playUISound('success');
       
       if (sessionData.focus_rating === 5) {

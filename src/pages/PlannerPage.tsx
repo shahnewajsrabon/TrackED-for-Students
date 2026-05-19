@@ -76,6 +76,78 @@ export default function PlannerPage() {
   const getDaysInMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth() + 1, 0).getDate();
   const getFirstDayOfMonth = (date: Date) => new Date(date.getFullYear(), date.getMonth(), 1).getDay();
 
+  const [isGeneratingPlan, setIsGeneratingPlan] = useState(false);
+
+  const handleGenerateAIPlan = async () => {
+    if (!user) return;
+    setIsGeneratingPlan(true);
+    try {
+      const subjectData = subjects.map(s => ({
+        id: s.id,
+        name: s.name,
+        weeklyGoalHrs: s.weeklyGoalHrs,
+        examDate: s.examDate
+      }));
+
+      const contents = `Create a 7-day study plan starting tomorrow for these subjects based on their weekly goals and upcoming exams.
+Subjects: ${JSON.stringify(subjectData)}
+Break down into reasonable daily study sessions (1-2 hours each).`;
+
+      const response = await fetch('/api/ai/generate', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          contents,
+          config: {
+            responseMimeType: 'application/json',
+            responseSchema: {
+              type: "ARRAY",
+              items: {
+                type: "OBJECT",
+                properties: {
+                  title: { type: "STRING", description: "Title of the study session" },
+                  subject_id: { type: "STRING" },
+                  day_offset: { type: "INTEGER", description: "1 for tomorrow, 2 for day after, etc." },
+                  duration_hrs: { type: "NUMBER" }
+                },
+                required: ['title', 'subject_id', 'day_offset', 'duration_hrs']
+              }
+            }
+          }
+        })
+      });
+
+      const data = await response.json();
+      if (!response.ok) throw new Error(data.error);
+
+      const plan = JSON.parse(data.text);
+      
+      const promises = plan.map((session: any) => {
+        const d = new Date();
+        d.setDate(d.getDate() + session.day_offset);
+        d.setHours(9 + (Math.random()*4), 0, 0, 0); // Random time between 9am-1pm
+
+        return addDoc(collection(db, 'tasks'), {
+          user_id: user.uid,
+          title: session.title,
+          due_date: d.toISOString().slice(0, 16),
+          priority: 'medium',
+          is_completed: false,
+          subject_id: session.subject_id,
+          created_at: new Date().toISOString()
+        });
+      });
+
+      await Promise.all(promises);
+      alert('AI successfully generated your 7-day study plan!');
+    } catch (e) {
+       console.error("AI Plan Error", e);
+       alert("Failed to generate AI plan. Please try again.");
+    } finally {
+      setIsGeneratingPlan(false);
+    }
+  };
+
   const prevMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() - 1, 1));
   const nextMonth = () => setCurrentDate(new Date(currentDate.getFullYear(), currentDate.getMonth() + 1, 1));
 
@@ -185,13 +257,27 @@ export default function PlannerPage() {
         </div>
       )}
 
-      <div className="mb-8">
-        <h1 className="text-3xl md:text-5xl font-black tracking-tight text-brand-text-primary">
-          Study Planner
-        </h1>
-        <p className="text-brand-text-secondary font-medium mt-2 text-base md:text-lg">
-          Manage your schedule and stay on track.
-        </p>
+      <div className="mb-8 flex flex-col md:flex-row md:items-center justify-between gap-4">
+        <div>
+          <h1 className="text-3xl md:text-5xl font-black tracking-tight text-brand-text-primary">
+            Study Planner
+          </h1>
+          <p className="text-brand-text-secondary font-medium mt-2 text-base md:text-lg">
+            Manage your schedule and stay on track.
+          </p>
+        </div>
+        <button 
+          onClick={handleGenerateAIPlan}
+          disabled={isGeneratingPlan || subjects.length === 0}
+          className="bg-brand-text-primary text-brand-bg px-6 py-3 rounded-2xl font-bold hover:opacity-90 disabled:opacity-50 transition-all active:scale-95 shadow-lg shadow-black/10 dark:shadow-white/10 flex items-center gap-2 max-w-fit"
+        >
+          {isGeneratingPlan ? (
+            <div className="w-5 h-5 rounded-full border-2 border-brand-bg border-t-transparent animate-spin" />
+          ) : (
+            <span className="text-xl leading-none font-black opacity-80 sparkle-animation">✨</span>
+          )}
+          {isGeneratingPlan ? 'Creating Plan...' : 'Auto-Generate Schedule'}
+        </button>
       </div>
 
       <div className="flex flex-col xl:flex-row gap-6 md:gap-8 flex-1">

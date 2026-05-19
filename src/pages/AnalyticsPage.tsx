@@ -46,6 +46,17 @@ export default function AnalyticsPage() {
     }).finally(() => setLoading(false));
   }, [range, getSessionsByDateRange, user]);
 
+  const [tasks, setTasks] = useState<any[]>([]);
+
+  useEffect(() => {
+    if (user) {
+      const q = query(collection(db, 'tasks'), where('user_id', '==', user.uid));
+      getDocs(q).then((snap) => {
+        setTasks(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      });
+    }
+  }, [user]);
+
   const stats = useMemo(() => {
     const totalMins = sessions.reduce((acc, s) => acc + s.duration_mins, 0);
     const totalHrs = (totalMins / 60).toFixed(1);
@@ -191,6 +202,41 @@ export default function AnalyticsPage() {
         </div>
       </div>
 
+      {tasks.length > 0 && (
+        <div className="bg-brand-surface shadow hover:shadow-md transition-shadow p-6 rounded-2xl border border-brand-border">
+           <h2 className="text-lg font-bold mb-6 text-brand-text-primary">Time Spent on Tasks & Exams</h2>
+           <div className="space-y-4">
+             {(() => {
+                const taskTimeMap: Record<string, number> = {};
+                sessions.forEach(s => {
+                   if (s.linked_task_id) {
+                      taskTimeMap[s.linked_task_id] = (taskTimeMap[s.linked_task_id] || 0) + s.duration_mins;
+                   }
+                });
+                
+                const relevantTasks = tasks.filter(t => taskTimeMap[t.id] > 0);
+                
+                if (relevantTasks.length === 0) {
+                  return <div className="text-brand-text-secondary text-sm">No linked sessions found in this time range.</div>;
+                }
+
+                return relevantTasks.map(t => (
+                  <div key={t.id} className="bg-brand-bg rounded-xl p-4 border border-brand-border flex items-center justify-between">
+                     <div>
+                       <span className={`text-[10px] uppercase tracking-wider font-bold px-2 py-0.5 rounded flex items-center w-fit mb-1 ${t.priority === 'high' ? 'bg-danger/10 text-danger' : 'bg-primary/10 text-primary'}`}>{t.priority === 'high' ? 'Exam' : 'Task'}</span>
+                       <p className="font-bold text-brand-text-primary">{t.title}</p>
+                     </div>
+                     <div className="text-right">
+                       <span className="font-black text-lg text-brand-text-primary">{(taskTimeMap[t.id] / 60).toFixed(1)}h</span>
+                       <p className="text-xs text-brand-text-secondary font-medium">({taskTimeMap[t.id]} mins)</p>
+                     </div>
+                  </div>
+                ));
+             })()}
+           </div>
+        </div>
+      )}
+
        <div className="bg-brand-surface shadow hover:shadow-md transition-shadow p-6 rounded-2xl border border-brand-border">
           <h2 className="text-lg font-bold mb-6 text-brand-text-primary">Activity by Time of Day</h2>
           <div className="h-[250px] w-full">
@@ -207,8 +253,8 @@ export default function AnalyticsPage() {
       </div>
 
       <div className="bg-brand-surface shadow hover:shadow-md transition-shadow p-6 rounded-2xl border border-brand-border">
-        <div className="flex flex-col md:flex-row justify-between items-start flex-wrap gap-4 mb-6">
-          <h2 className="text-lg font-bold text-brand-text-primary">Study Journal</h2>
+         <div className="flex flex-col md:flex-row justify-between items-start flex-wrap gap-4 mb-6">
+           <h2 className="text-lg font-bold text-brand-text-primary">Study Journal</h2>
           <input 
             type="text" 
             placeholder="Search notes, subjects, mood..." 

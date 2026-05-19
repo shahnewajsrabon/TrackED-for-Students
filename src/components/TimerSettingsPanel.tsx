@@ -1,6 +1,6 @@
 import React from 'react';
 import { motion } from 'framer-motion';
-import { Settings, Volume2, Music } from 'lucide-react';
+import { Settings, Volume2, Music, CheckCircle, ShieldAlert } from 'lucide-react';
 import clsx from 'clsx';
 import { TimerState, Subject } from '@/types';
 import { ambientAudio } from '@/lib/audio';
@@ -9,6 +9,7 @@ interface Props {
   config: TimerState;
   setConfig: (config: TimerState) => void;
   subjects: Subject[];
+  tasks?: any[];
   mode: 'Focus' | 'Break';
   isActive: boolean;
   sessionCount: number;
@@ -20,6 +21,7 @@ export default function TimerSettingsPanel({
   config,
   setConfig,
   subjects,
+  tasks = [],
   mode,
   isActive,
   sessionCount,
@@ -174,18 +176,58 @@ export default function TimerSettingsPanel({
                </div>
              </div>
 
-             <div className="flex items-center justify-between pt-4 border-t border-brand-border">
-               <label className="text-sm font-medium text-brand-text-secondary">Auto-start Next Round</label>
-               <button 
-                 onClick={() => setConfig({...config, autoStart: !config.autoStart})}
-                 className={clsx("w-10 h-6 rounded-full transition-colors relative", config.autoStart ? "bg-primary" : "bg-brand-border border border-brand-border")}
-               >
-                 <motion.div 
-                   className="w-4 h-4 bg-brand-surface rounded-full absolute top-1 shadow-sm"
-                   animate={{ left: config.autoStart ? 20 : 4 }}
-                   transition={{ type: "spring", stiffness: 500, damping: 30 }}
-                 />
-               </button>
+             <div className="border-t border-brand-border mt-3 pt-3 space-y-3">
+               <div>
+                  <label className="block text-[10px] font-bold text-gray-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+                    <CheckCircle className="w-3 h-3" /> Link to Task/Exam
+                  </label>
+                  <select 
+                    value={config.linkedTaskId || ''} 
+                    onChange={e => setConfig({...config, linkedTaskId: e.target.value || null})}
+                    className="w-full bg-brand-bg border border-brand-border rounded-lg px-2 py-1.5 text-xs focus:outline-none focus:ring-1 focus:ring-primary text-brand-text-primary"
+                  >
+                    <option value="">None</option>
+                    {tasks.map(t => (
+                      <option key={t.id} value={t.id}>{t.title} ({t.priority === 'high' ? 'Exam' : 'Task'})</option>
+                    ))}
+                  </select>
+               </div>
+             </div>
+
+             <div className="flex flex-col gap-3 pt-4 border-t border-brand-border">
+               <div className="flex items-center justify-between">
+                 <label className="text-sm font-medium text-brand-text-secondary flex items-center gap-2">
+                    <ShieldAlert className="w-4 h-4 text-orange-500" /> Strict Mode
+                 </label>
+                 <button 
+                   onClick={() => setConfig({...config, strictMode: !config.strictMode})}
+                   className={clsx("w-10 h-6 rounded-full transition-colors relative", config.strictMode ? "bg-orange-500" : "bg-brand-border border border-brand-border")}
+                 >
+                   <motion.div 
+                     className="w-4 h-4 bg-brand-surface rounded-full absolute top-1 shadow-sm"
+                     animate={{ left: config.strictMode ? 20 : 4 }}
+                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                   />
+                 </button>
+               </div>
+               {config.strictMode && (
+                 <p className="text-xs text-orange-600 dark:text-orange-400">
+                   If you leave this tab during a Focus session, the timer will pause and warn you!
+                 </p>
+               )}
+               <div className="flex items-center justify-between mt-2">
+                 <label className="text-sm font-medium text-brand-text-secondary">Auto-start Next Round</label>
+                 <button 
+                   onClick={() => setConfig({...config, autoStart: !config.autoStart})}
+                   className={clsx("w-10 h-6 rounded-full transition-colors relative", config.autoStart ? "bg-primary" : "bg-brand-border border border-brand-border")}
+                 >
+                   <motion.div 
+                     className="w-4 h-4 bg-brand-surface rounded-full absolute top-1 shadow-sm"
+                     animate={{ left: config.autoStart ? 20 : 4 }}
+                     transition={{ type: "spring", stiffness: 500, damping: 30 }}
+                   />
+                 </button>
+               </div>
              </div>
           </div>
        </div>

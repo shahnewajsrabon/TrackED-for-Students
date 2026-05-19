@@ -1,6 +1,6 @@
 import React from 'react';
 import { NavLink } from 'react-router-dom';
-import { BookOpen, Timer, BarChart3, Users, Trophy, UserCircle, Flame, Moon, Sun, ListChecks, Calendar, BrainCircuit, FileText, Wrench, Languages, FileQuestion } from 'lucide-react';
+import { BookOpen, Timer, BarChart3, Users, Trophy, UserCircle, Flame, Moon, Sun, ListChecks, Calendar, BrainCircuit, FileText, Wrench, Languages, FileQuestion, ShoppingBag } from 'lucide-react';
 import { useAuthContext } from '@/context/AuthContext';
 import { useAuth } from '@/hooks/useAuth';
 import { useTheme } from '@/context/ThemeContext';
@@ -35,6 +35,7 @@ const navSectionsConfig = [
       { path: '/analytics', labelKey: 'Analytics', icon: BarChart3 },
       { path: '/groups', labelKey: 'Groups', icon: Users },
       { path: '/leaderboard', labelKey: 'Leaderboard', icon: Trophy },
+      { path: '/store', labelKey: 'Store & Quests', icon: ShoppingBag },
     ]
   }
 ];

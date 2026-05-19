@@ -23,6 +23,7 @@ import FlashcardsPage from './pages/FlashcardsPage';
 import NotesPage from './pages/NotesPage';
 import ToolsPage from './pages/ToolsPage';
 import ExamsPage from './pages/ExamsPage';
+import StorePage from './pages/StorePage';
 
 function App() {
   return (
@@ -48,6 +49,7 @@ function App() {
                 <Route path="/groups/:id" element={<GroupChatPage />} />
                 <Route path="/leaderboard" element={<LeaderboardPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
+                <Route path="/store" element={<StorePage />} />
               </Route>
             </Routes>
           <Toaster position="top-center" toastOptions={{

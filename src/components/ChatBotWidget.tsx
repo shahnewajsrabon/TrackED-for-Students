@@ -176,37 +176,15 @@ export default function ChatBotWidget() {
     }
   };
 
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if ((!input.trim() && !attachment) || isLoading) return;
-
-    const parts: MessagePart[] = [];
-    if (input.trim()) {
-      parts.push({ text: input.trim() });
-    }
-    if (attachment) {
-      parts.push({ inlineData: { data: attachment.data, mimeType: attachment.mimeType } });
-    }
-
-    const userMessage: Message = { role: 'user', parts };
-    const newMessages = [...messages, userMessage];
-    setMessages(newMessages);
-    setInput('');
-    const currentAttachmentUrl = attachment?.previewUrl;
-    setAttachment(null); // clear attachment after sending
-    setIsLoading(true);
-
+  const submitAIRequest = async (actualText: string, contextMessages: Message[], displayAttachment?: any) => {
     try {
-      // Logic for selecting model based on feature toggles:
-      let targetModel = 'gemini-3.1-flash-lite'; // bolt: low-latency 
+      let targetModel = 'gemini-3.1-flash-lite';
       let thinkingConfig: any = undefined;
       
       if (isReasoningMode) {
-         // network_intelligence: high-level thinking
          targetModel = 'gemini-3-flash-preview';
          thinkingConfig = { thinkingLevel: "HIGH" };
-      } else if (parts.some(p => p.inlineData)) {
-         // document_scanner: image analysis fallback to flash preview for multimodality
+      } else if (contextMessages.some(m => m.parts.some(p => p.inlineData))) {
          targetModel = 'gemini-3-flash-preview';
       } else if (!isFastMode) {
          targetModel = 'gemini-3-flash-preview';
@@ -217,7 +195,7 @@ export default function ChatBotWidget() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           model: targetModel,
-          contents: newMessages.map(m => ({
+          contents: contextMessages.map(m => ({
             role: m.role,
             parts: m.parts.map(p => {
                if (p.text) return { text: p.text };
@@ -235,16 +213,44 @@ export default function ChatBotWidget() {
       const data = await response.json();
       if (!response.ok) throw new Error(data.error);
 
-      setMessages(msgs => [...msgs, { role: 'model', parts: [{ text: data.text }] }]);
+      setMessages(msgs => {
+        // Find the placeholder user message to replace if we used a display override, or just append
+        // Wait, the display message is already in `messages` state. We just append the AI response.
+        return [...msgs, { role: 'model', parts: [{ text: data.text }] }];
+      });
     } catch (err: any) {
       console.error(err);
       setMessages(msgs => [...msgs, { role: 'model', parts: [{ text: "Sorry, I ran into an error. Please try again." }] }]);
     } finally {
       setIsLoading(false);
-      if (currentAttachmentUrl) {
-         URL.revokeObjectURL(currentAttachmentUrl); // memory cleanup
+      if (displayAttachment?.previewUrl) {
+         URL.revokeObjectURL(displayAttachment.previewUrl);
       }
     }
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if ((!input.trim() && !attachment) || isLoading) return;
+
+    const parts: MessagePart[] = [];
+    if (input.trim()) {
+      parts.push({ text: input.trim() });
+    }
+    if (attachment) {
+      parts.push({ inlineData: { data: attachment.data, mimeType: attachment.mimeType } });
+    }
+
+    const userMessage: Message = { role: 'user', parts };
+    const newMessages = [...messages, userMessage];
+    setMessages(newMessages);
+    setInput('');
+    const currentAttachmentUrl = attachment?.previewUrl;
+    const currentAttachment = attachment;
+    setAttachment(null);
+    setIsLoading(true);
+
+    await submitAIRequest(input.trim(), newMessages, currentAttachment);
   };
 
   return (
@@ -441,6 +447,66 @@ export default function ChatBotWidget() {
                       Summarize Notes
                     </button>
                   </div>
+                </div>
+              )}
+              
+              {!attachment && (
+                <div className="mb-3 flex gap-2 overflow-x-auto pb-1 no-scrollbar">
+                   <button
+                     type="button"
+                     onClick={async () => {
+                        setIsLoading(true);
+                        try {
+                          const { collection, getDocs, query, where, orderBy, limit } = await import('firebase/firestore');
+                          const { db } = await import('@/lib/firebase');
+                          const q = query(collection(db, 'notes'), where('user_id', '==', user?.uid), orderBy('created_at', 'desc'), limit(1));
+                          const snaps = await getDocs(q);
+                          if (snaps.empty) {
+                             alert("No notes found to quiz on.");
+                             setIsLoading(false);
+                             return;
+                          }
+                          const latestNote = snaps.docs[0].data();
+                          const messageText = `Please quiz me one question at a time on my latest note titled "${latestNote.title}". Note content:\n\n${latestNote.content}`;
+                          setMessages([...messages, { role: 'user', parts: [{ text: `Quiz me on my latest note: ${latestNote.title}` }] }]);
+                          submitAIRequest(messageText, [...messages, { role: 'user', parts: [{ text: messageText }] }]);
+                        } catch(e) { console.error(e); setIsLoading(false); }
+                     }}
+                     className="shrink-0 text-xs bg-indigo-50 text-indigo-600 border border-indigo-100 hover:bg-indigo-100 px-3 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-1.5"
+                   >
+                     <BrainCircuit className="w-3.5 h-3.5" /> Quiz my Latest Note
+                   </button>
+                   <button
+                     type="button"
+                     onClick={async () => {
+                        setIsLoading(true);
+                        try {
+                          const { collection, getDocs, query, where } = await import('firebase/firestore');
+                          const { db } = await import('@/lib/firebase');
+                          const q = query(collection(db, 'decks'), where('user_id', '==', user?.uid));
+                          const snaps = await getDocs(q);
+                          let flashcardsMsg = "";
+                          snaps.forEach(d => {
+                            if (d.data().cards) {
+                               d.data().cards.forEach((c: any) => {
+                                  flashcardsMsg += `Q: ${c.q}\nA: ${c.a}\n\n`;
+                               });
+                            }
+                          });
+                          if (!flashcardsMsg) {
+                             alert("No flashcards found to quiz on.");
+                             setIsLoading(false);
+                             return;
+                          }
+                          const messageText = `Please act as my tutor and quiz me one question at a time using these flashcards in a random order:\n\n${flashcardsMsg}`;
+                          setMessages([...messages, { role: 'user', parts: [{ text: "Quiz me on my flashcards!" }] }]);
+                          submitAIRequest(messageText, [...messages, { role: 'user', parts: [{ text: messageText }] }]);
+                        } catch(e) { console.error(e); setIsLoading(false); }
+                     }}
+                     className="shrink-0 text-xs bg-emerald-50 text-emerald-600 border border-emerald-100 hover:bg-emerald-100 px-3 py-1.5 rounded-lg font-medium transition-colors flex items-center gap-1.5"
+                   >
+                     <Sparkles className="w-3.5 h-3.5" /> Quiz my Flashcards
+                   </button>
                 </div>
               )}
             
