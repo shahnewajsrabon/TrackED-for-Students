@@ -101,3 +101,19 @@ export interface Exam {
   examName: string;
   examDate: string;
 }
+
+export interface Flashcard {
+  id: string;
+  q: string;
+  a: string;
+}
+
+export interface Deck {
+  id: string;
+  user_id: string;
+  title: string;
+  subject_id: string | null;
+  description: string;
+  cards: Flashcard[];
+  created_at: string;
+}
