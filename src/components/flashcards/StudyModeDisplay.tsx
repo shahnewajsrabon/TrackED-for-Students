@@ -2,29 +2,33 @@ import React from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Play } from 'lucide-react';
 import { Flashcard, Deck } from '@/types';
+import { SRSRating } from '@/lib/srs';
 
 interface StudyModeDisplayProps {
   activeDeck: Deck;
+  studyCards: Flashcard[];
   studyInd: number;
   showAnswer: boolean;
   setShowAnswer: (v: boolean) => void;
   setStudyMode: (v: boolean) => void;
   setStudyInd: (v: number) => void;
+  onRate: (rating: SRSRating) => void;
 }
 
 export default function StudyModeDisplay({
   activeDeck,
+  studyCards,
   studyInd,
   showAnswer,
   setShowAnswer,
   setStudyMode,
-  setStudyInd
+  setStudyInd,
+  onRate
 }: StudyModeDisplayProps) {
-  const cards = activeDeck.cards || [];
-  if (cards.length === 0) return null;
+  if (studyCards.length === 0) return null;
   
-  const currentCard = cards[studyInd];
-  const progress = Math.round(((studyInd + 1) / cards.length) * 100);
+  const currentCard = studyCards[studyInd];
+  const progress = Math.round(((studyInd + 1) / studyCards.length) * 100);
 
   return (
     <motion.div 
@@ -44,7 +48,7 @@ export default function StudyModeDisplay({
             />
           </div>
           <div className="font-black text-brand-text-secondary text-sm tabular-nums whitespace-nowrap">
-            {studyInd + 1} / {cards.length}
+            {studyInd + 1} / {studyCards.length}
           </div>
         </div>
       </div>
@@ -99,18 +103,17 @@ export default function StudyModeDisplay({
         
         <AnimatePresence mode="wait">
           {showAnswer ? (
-            <motion.button 
+            <motion.div
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0, scale: 0.9 }}
-              onClick={() => {
-                setShowAnswer(false);
-                setStudyInd((studyInd + 1) % cards.length);
-              }}
-              className="px-8 py-3.5 bg-brand-text-primary text-brand-bg rounded-2xl font-bold hover:opacity-90 transition-all active:scale-95 shadow-xl flex items-center gap-2"
+              className="flex gap-2"
             >
-              Next Card <Play className="w-5 h-5 fill-current" />
-            </motion.button>
+              <button onClick={() => onRate('again')} className="px-4 py-2 bg-red-100 text-red-700 rounded-xl font-bold hover:bg-red-200">Again</button>
+              <button onClick={() => onRate('hard')} className="px-4 py-2 bg-orange-100 text-orange-700 rounded-xl font-bold hover:bg-orange-200">Hard</button>
+              <button onClick={() => onRate('good')} className="px-4 py-2 bg-green-100 text-green-700 rounded-xl font-bold hover:bg-green-200">Good</button>
+              <button onClick={() => onRate('easy')} className="px-4 py-2 bg-blue-100 text-blue-700 rounded-xl font-bold hover:bg-blue-200">Easy</button>
+            </motion.div>
           ) : (
             <motion.div
               initial={{ opacity: 0 }}

@@ -18,6 +18,9 @@ import UpcomingRemindersPanel from '@/components/dashboard/UpcomingRemindersPane
 import { differenceInDays, startOfDay, isFuture, formatDistanceToNow } from 'date-fns';
 import ToolsSection from '@/components/ToolsSection';
 import { useTranslation } from 'react-i18next';
+import { collection, query, where, getDocs } from 'firebase/firestore';
+import { Deck } from '@/types';
+import { isCardDue } from '@/lib/srs';
 
 export default function DashboardPage() {
   const { user } = useAuthContext();
@@ -29,6 +32,8 @@ export default function DashboardPage() {
   const [userData, setUserData] = useState<User | null>(null);
   const [todaySessions, setTodaySessions] = useState<Session[]>([]);
   const [allSessions, setAllSessions] = useState<Session[]>([]);
+  const [dueDecks, setDueDecks] = useState<number>(0);
+  const [dueCards, setDueCards] = useState<number>(0);
   const [loading, setLoading] = useState(true);
 
   const calculateSyllabusProgress = (syllabus?: SyllabusTopic[]) => {
@@ -57,6 +62,23 @@ export default function DashboardPage() {
       start.setDate(start.getDate() - 365);
       const yearSessions = await getSessionsByDateRange(start.toISOString(), end.toISOString());
       setAllSessions(yearSessions);
+
+      const decksQuery = query(collection(db, 'decks'), where('user_id', '==', user.uid));
+      const decksSnap = await getDocs(decksQuery);
+
+      let totalDueCards = 0;
+      let decksWithDueCards = 0;
+
+      decksSnap.docs.forEach(d => {
+        const deckData = d.data() as Deck;
+        const due = (deckData.cards || []).filter(c => isCardDue(c.nextReviewDate)).length;
+        if (due > 0) {
+          totalDueCards += due;
+          decksWithDueCards++;
+        }
+      });
+      setDueCards(totalDueCards);
+      setDueDecks(decksWithDueCards);
       
       setLoading(false);
     }
@@ -319,6 +341,36 @@ export default function DashboardPage() {
                </p>
              </div>
           </motion.section>
+
+          {dueCards > 0 && (
+            <motion.section
+              initial={{ opacity: 0, x: 20 }}
+              animate={{ opacity: 1, x: 0 }}
+              transition={{ delay: 0.5 }}
+              className="bg-brand-surface shadow hover:shadow-md transition-all duration-300 p-8 md:p-10 rounded-2xl border border-brand-border"
+            >
+              <div className="flex items-center gap-3 mb-6 text-brand-text-primary">
+                <BrainCircuit className="w-8 h-8 text-primary" />
+                <h2 className="text-2xl font-bold">Review Due</h2>
+              </div>
+              <div className="bg-brand-bg rounded-2xl p-6 flex flex-col gap-4 border border-brand-border shadow-sm">
+                 <div className="flex justify-between items-center">
+                   <div className="text-brand-text-secondary font-medium">Decks Due</div>
+                   <div className="font-bold text-lg text-brand-text-primary">{dueDecks}</div>
+                 </div>
+                 <div className="flex justify-between items-center">
+                   <div className="text-brand-text-secondary font-medium">Cards to Review</div>
+                   <div className="font-bold text-lg text-primary">{dueCards}</div>
+                 </div>
+                 <Link
+                   to="/flashcards"
+                   className="w-full mt-2 py-3 bg-primary hover:bg-primary/90 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-colors shadow-sm"
+                 >
+                   Review Now <ArrowRight className="w-4 h-4" />
+                 </Link>
+              </div>
+            </motion.section>
+          )}
 
           <UpcomingExamsPanel exams={upcomingExams} t={t} />
 

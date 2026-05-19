@@ -9,6 +9,8 @@ import { motion, AnimatePresence } from 'motion/react';
 
 import { Flashcard, Deck } from '@/types';
 import StudyModeDisplay from '@/components/flashcards/StudyModeDisplay';
+import { calculateNextReview, isCardDue, SRSRating } from '@/lib/srs';
+import toast from 'react-hot-toast';
 
 export default function FlashcardsPage() {
   const { user } = useAuth();
@@ -24,6 +26,7 @@ export default function FlashcardsPage() {
   const [newCardA, setNewCardA] = useState('');
   
   const [studyMode, setStudyMode] = useState(false);
+  const [studyCards, setStudyCards] = useState<Flashcard[]>([]);
   const [studyInd, setStudyInd] = useState(0);
   const [showAnswer, setShowAnswer] = useState(false);
 
@@ -124,6 +127,8 @@ export default function FlashcardsPage() {
     const newCards: Flashcard[] = [...(activeDeck.cards || []), { q: newCardQ.trim(), a: newCardA.trim(), id: crypto.randomUUID() }];
     await updateDoc(doc(db, 'decks', activeDeck.id), { cards: newCards });
     
+    setActiveDeck({ ...activeDeck, cards: newCards });
+
     setNewCardQ('');
     setNewCardA('');
   };
@@ -136,15 +141,73 @@ export default function FlashcardsPage() {
 
   if (loading) return <LoadingSpinner />;
 
+  const handleRateCard = async (rating: SRSRating) => {
+    if (!activeDeck || !user) return;
+
+    // Calculate new SRS data
+    const currentStudyCard = studyCards[studyInd];
+    const newSrsData = calculateNextReview(
+      rating,
+      currentStudyCard.interval,
+      currentStudyCard.easeFactor,
+      currentStudyCard.repetitions
+    );
+
+    const updatedStudyCard = {
+      ...currentStudyCard,
+      ...newSrsData
+    };
+
+    // Update study list locally
+    const newStudyCards = [...studyCards];
+    newStudyCards[studyInd] = updatedStudyCard;
+    setStudyCards(newStudyCards);
+
+    // Merge updated card into full deck array to avoid data loss
+    const fullDeckCards = activeDeck.cards || [];
+    const updatedFullCards = fullDeckCards.map(c =>
+      c.id === updatedStudyCard.id ? updatedStudyCard : c
+    );
+
+    const updatedDeck = { ...activeDeck, cards: updatedFullCards };
+    setActiveDeck(updatedDeck);
+
+    // Persist to DB
+    try {
+      await updateDoc(doc(db, 'decks', activeDeck.id), {
+        cards: updatedFullCards,
+        updated_at: new Date().toISOString()
+      });
+    } catch (err) {
+      console.error('Error updating SRS data', err);
+      toast.error('Failed to save progress');
+    }
+
+    // Move to next card, or exit if done
+    const nextInd = studyInd + 1;
+    if (nextInd < studyCards.length) {
+      setStudyInd(nextInd);
+      setShowAnswer(false);
+    } else {
+      toast.success('Finished all due cards for this deck!');
+      setStudyMode(false);
+      setStudyCards([]);
+      setStudyInd(0);
+      setShowAnswer(false);
+    }
+  };
+
   if (studyMode && activeDeck) {
     return (
       <StudyModeDisplay
         activeDeck={activeDeck}
+        studyCards={studyCards}
         studyInd={studyInd}
         showAnswer={showAnswer}
         setShowAnswer={setShowAnswer}
         setStudyMode={setStudyMode}
         setStudyInd={setStudyInd}
+        onRate={handleRateCard}
       />
     );
   }
@@ -237,14 +300,20 @@ export default function FlashcardsPage() {
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
                   onClick={() => {
-                    setStudyInd(0);
-                    setShowAnswer(false);
-                    setStudyMode(true);
+                    const dueCards = activeDeck.cards.filter(c => isCardDue(c.nextReviewDate));
+                    if (dueCards.length > 0) {
+                      setStudyCards(dueCards);
+                      setStudyInd(0);
+                      setShowAnswer(false);
+                      setStudyMode(true);
+                    } else {
+                      toast.success('No cards due for review right now! Great job!');
+                    }
                   }}
                   disabled={!activeDeck.cards || activeDeck.cards.length === 0}
                   className="bg-primary text-white px-8 py-4 rounded-2xl font-bold hover:bg-primary/90 disabled:opacity-50 transition-all shadow-xl shadow-primary/20 flex items-center justify-center gap-2"
                 >
-                  <Play className="w-5 h-5 fill-current" /> Study Now
+                  <Play className="w-5 h-5 fill-current" /> Study Due Cards
                 </motion.button>
               </div>
 

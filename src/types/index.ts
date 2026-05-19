@@ -106,6 +106,10 @@ export interface Flashcard {
   id: string;
   q: string;
   a: string;
+  nextReviewDate?: string;
+  interval?: number;
+  easeFactor?: number;
+  repetitions?: number;
 }
 
 export interface Deck {
