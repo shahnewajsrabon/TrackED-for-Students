@@ -4,7 +4,7 @@ import { useAuthContext } from '@/context/AuthContext';
 import LoadingSpinner from './LoadingSpinner';
 import Navbar from './Navbar';
 import { db } from '@/lib/firebase';
-import { doc, getDoc } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
 import { motion, AnimatePresence } from 'motion/react';
 import ChatBotWidget from './ChatBotWidget';
 
@@ -16,9 +16,12 @@ export default function ProtectedRoute() {
   useEffect(() => {
     if (user) {
       const docRef = doc(db, 'users', user.uid);
-      getDoc(docRef).then((docSnap) => {
+      const unsubscribe = onSnapshot(docRef, (docSnap) => {
         setHasProfile(docSnap.exists());
       });
+      return () => unsubscribe();
+    } else {
+      setHasProfile(null);
     }
   }, [user]);
 
